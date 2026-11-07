@@ -254,8 +254,9 @@ function groupSummary(input: {
     return `Not enough parent reports yet for any of your kids.`
   }
 
-  const spread = best.score - driving.score
-  if (best !== driving && (best.level !== driving.level || spread >= 10)) {
+  // "Held back" only when the strictest child lands in a worse band than the best-off child.
+  // Two "great" fits with different scores are still great for everyone.
+  if (best !== driving && best.level !== driving.level) {
     const why = driving.warnings.length ? driving.warnings.slice(0, 2).join(', ') : 'a weaker overall fit'
     const goodNews =
       best.level === 'great' || best.level === 'good' ? ` Works well for your ${best.description}.` : ''
