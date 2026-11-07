@@ -76,6 +76,14 @@ describe('findBailOutOptions', () => {
     }
   })
 
+  it('never sends a hungry family on a long trip, even if it is the only decent option', () => {
+    const everythingFar = candidatesFrom(CURRENT).map((c) => ({ ...c, item: { ...c.item, travel: { mode: 'ride' as const, minutes: 37 } } }))
+    expect(findBailOutOptions({ currentId: CURRENT, candidates: everythingFar }).picks).toEqual([])
+    for (const pick of findBailOutOptions({ currentId: CURRENT, candidates: candidatesFrom(CURRENT) }).picks) {
+      expect(pick.candidate.item.travel.minutes).toBeLessThanOrEqual(DEFAULT_BAIL_OUT_CONFIG.maxTravelMinutes)
+    }
+  })
+
   it('returns nothing when no other place is open', () => {
     const closed = candidatesFrom(CURRENT).map((c) => ({ ...c, item: { ...c.item, open: false } }))
     expect(findBailOutOptions({ currentId: CURRENT, candidates: closed }).picks).toEqual([])

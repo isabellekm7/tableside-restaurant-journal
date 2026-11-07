@@ -3,6 +3,7 @@ import { useId, useState, type FormEvent, type InputHTMLAttributes, type ReactNo
 import { Button } from '../../components/ui/Button'
 import type { City } from '../../data'
 import { cityLabel, resolveCity } from '../../lib/discovery/cities'
+import { locationMessage } from './locationMessage'
 import type { LocationStatus } from './useUserLocation'
 
 function IconInput({ label, icon, ...rest }: { label: string; icon: ReactNode } & InputHTMLAttributes<HTMLInputElement>) {
@@ -34,23 +35,6 @@ export interface SearchBarProps {
   onUseCityCentre: () => void
   filterCount: number
   onOpenFilters: () => void
-}
-
-function locationMessage(status: LocationStatus, city: City): string | null {
-  switch (status.kind) {
-    case 'locating':
-      return 'Finding you…'
-    case 'ok':
-      return `Showing places near you in ${status.city.name}.`
-    case 'outside':
-      return `You’re outside our sample cities, so we’re showing ${city.name} from its centre.`
-    case 'denied':
-      return `Location is off for this site, so distances are from the centre of ${city.name}. You can pick a city above.`
-    case 'unavailable':
-      return `We couldn’t find your location, so distances are from the centre of ${city.name}.`
-    default:
-      return null
-  }
 }
 
 interface CityFormProps {

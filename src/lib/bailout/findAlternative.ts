@@ -12,10 +12,12 @@ export interface BailOutConfig {
   maxWaitMinutes: number
   /** And must stay open this long. */
   minMinutesOpen: number
+  /** "Nearest" means genuinely close: with a hungry family in tow, a 40-minute ride is not an alternative. */
+  maxTravelMinutes: number
   maxPicks: number
 }
 
-export const DEFAULT_BAIL_OUT_CONFIG: BailOutConfig = { maxWaitMinutes: 10, minMinutesOpen: 30, maxPicks: 3 }
+export const DEFAULT_BAIL_OUT_CONFIG: BailOutConfig = { maxWaitMinutes: 10, minMinutesOpen: 30, maxTravelMinutes: 20, maxPicks: 3 }
 
 export interface BailOutCandidate {
   item: RankedRestaurant
@@ -53,8 +55,8 @@ const nearestFirst = (a: BailOutPick, b: BailOutPick): number =>
   a.candidate.item.distanceKm - b.candidate.item.distanceKm || b.candidate.item.fit.score - a.candidate.item.fit.score
 
 /**
- * Nearest first among places that are open, have a fast kitchen, a short wait, and a
- * good fit for the whole family. If none, the nearest open places that aren't a
+ * Nearest first among places that are open, close by, have a fast kitchen, a short wait,
+ * and a good fit for the whole family. If none, the nearest open places that aren't a
  * poor fit, flagged with what falls short. The current restaurant is never offered.
  */
 export function findBailOutOptions(input: {
@@ -67,6 +69,7 @@ export function findBailOutOptions(input: {
     (c) =>
       c.item.restaurant.id !== input.currentId &&
       c.item.open &&
+      c.item.travel.minutes <= config.maxTravelMinutes &&
       (c.item.minutesUntilClose === null || c.item.minutesUntilClose >= config.minMinutesOpen),
   )
   const described = open.map((c) => describe(c, config))
