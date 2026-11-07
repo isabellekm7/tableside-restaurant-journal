@@ -79,8 +79,13 @@ restart `npm run dev`. Leave them blank to run on the bundled sample data only. 
 
 - **Feedback does not affect scores.** Reports are stored for review only. Without accounts or moderation, letting them
   move scores would be easy to game. The scorer still uses the catalog's `parentSignals`.
-- **Trip lists need anonymous sign-in**, which is a project setting: Authentication, Sign In / Providers, enable
-  "Allow anonymous sign-ins". Until it is on, lists simply stay on the device (everything still works).
+- **Accounts are optional** (`/account`): email + password sign-up, sign-in, forgot/reset password and sign-out. A signed-in
+  user's trip lists sync to their account; everyone else's stay on the device. Passwords go straight to Supabase Auth and are
+  never stored, logged or sent to analytics. Sign-up and reset responses never reveal whether an email already has an account.
+- **Auth settings live in your Supabase dashboard, not in this repo.** If "Confirm email" is on, sign-up shows "check your
+  email" with a resend button; if it's off, people are signed in immediately. Password-reset (and confirmation) links return to
+  `/account`, so add your app's address (e.g. `http://localhost:5173/account` and your deployed URL) under Authentication, URL
+  Configuration, Redirect URLs. Anonymous sign-ins are not needed.
 - **Offline-first:** if the backend can't be reached, catalog reads fall back to the bundled data; feedback and lists are
   saved on the device first and pushed to the backend later. Library-level retries are off so offline users don't wait.
 - **Sample data:** `npm run db:seed-sql` regenerates `supabase/seed.sql` from `src/data/seed`, so the database and the

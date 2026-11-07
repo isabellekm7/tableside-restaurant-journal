@@ -1,10 +1,11 @@
-import { Bookmark, Utensils } from 'lucide-react'
+import { Bookmark, UserRound, Utensils } from 'lucide-react'
 import { NavLink } from 'react-router'
 import { cx } from '../../lib/cx'
 
 const items = [
   { to: '/', label: 'Explore', icon: Utensils, end: true },
   { to: '/saved', label: 'Saved', icon: Bookmark, end: false },
+  { to: '/account', label: 'Account', icon: UserRound, end: false },
 ] as const
 
 /** Rendered twice by AppShell (bottom bar on phones, header on wider screens). */

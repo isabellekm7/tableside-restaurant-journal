@@ -1,5 +1,6 @@
 import type { RouteObject } from 'react-router'
 import { AppShell } from '../components/layout/AppShell'
+import { AccountPage } from '../features/account/AccountPage'
 import { DebugPage } from '../features/debug/DebugPage'
 import { DiscoveryPage } from '../features/discovery/DiscoveryPage'
 import { OnboardingPage } from '../features/onboarding/OnboardingPage'
@@ -18,6 +19,7 @@ export const routes: RouteObject[] = [
     children: [
       { index: true, element: <DiscoveryPage /> },
       { path: 'restaurant/:id', element: <PlaceholderPage title="Restaurant" phase={5} /> },
+      { path: 'account', element: <AccountPage /> },
       { path: 'saved', element: <PlaceholderPage title="Saved" phase={6} /> },
       { path: 'styleguide', element: <StyleguidePage /> },
       { path: 'debug', element: <DebugPage /> },

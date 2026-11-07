@@ -1,6 +1,8 @@
+import { useEffect } from 'react'
 import { Link, Navigate, Outlet, ScrollRestoration, useLocation } from 'react-router'
 import { ProfileChip } from '../../features/profile/ProfileChip'
 import { ProfileSheet } from '../../features/profile/ProfileSheet'
+import { useAuthStore } from '../../store/authStore'
 import { useProfileStore } from '../../store/profileStore'
 import { PrimaryNav } from './PrimaryNav'
 import { SampleDataStrip } from './SampleDataStrip'
@@ -16,6 +18,10 @@ const GATE_EXEMPT = ['/styleguide', '/debug']
 export function AppShell() {
   const onboarding = useProfileStore((s) => s.onboarding)
   const { pathname } = useLocation()
+  const initAuth = useAuthStore((s) => s.init)
+
+  // Restore any saved session and follow sign-in / sign-out / password-recovery events.
+  useEffect(() => initAuth(), [initAuth])
 
   if (onboarding === 'pending' && !GATE_EXEMPT.includes(pathname)) {
     return <Navigate to="/welcome" replace state={{ from: pathname }} />
