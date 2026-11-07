@@ -1,6 +1,6 @@
-import { List, Map as MapIcon, Users } from 'lucide-react'
+import { List, Map as MapIcon, Users, Zap } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Button } from '../../components/ui/Button'
+import { Button, ButtonLink } from '../../components/ui/Button'
 import { Chip } from '../../components/ui/Chip'
 import { Notice } from '../../components/ui/Notice'
 import { StateMessage } from '../../components/ui/StateMessage'
@@ -239,6 +239,11 @@ export function DiscoveryPage() {
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-6">
         <div className="flex min-w-0 flex-col gap-4">
+          {/* The fastest path to an answer: one prominent button, above everything else. */}
+          <ButtonLink to="/right-now" variant="accent" size="lg" fullWidth leadingIcon={<Zap size={22} aria-hidden="true" />} className="h-auto flex-col gap-0 py-3">
+            <span>We need to eat soon</span>
+            <span className="text-small font-medium opacity-95">Open now · close by · short wait</span>
+          </ButtonLink>
         <div className="flex flex-col gap-3">
           <SearchBar
             cities={cities}

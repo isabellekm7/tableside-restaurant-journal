@@ -7,6 +7,7 @@ import { ChoiceChips } from '../../components/ui/ChoiceChips'
 import { Notice } from '../../components/ui/Notice'
 import { FitBadge } from '../../components/ui/FitBadge'
 import { SampleDataTag } from '../../components/ui/SampleDataTag'
+import { WaitBadge } from '../../components/ui/WaitBadge'
 import { Skeleton } from '../../components/ui/Skeleton'
 import { StateMessage } from '../../components/ui/StateMessage'
 import { TextField } from '../../components/ui/TextField'
@@ -90,6 +91,12 @@ function FitDemo() {
         <FitBadge size="sm" level="great" label="Great for toddlers" score={92} />
         <FitBadge size="sm" level="mixed" label="Mixed for infants" score={54} />
         <FitBadge size="sm" level="poor" label="Not for your 2-year-old" score={21} />
+      </div>
+      <Subheading>Wait badges (simulated in this prototype)</Subheading>
+      <div className="flex flex-wrap gap-3">
+        {([[0, 'short'], [10, 'short'], [20, 'moderate'], [45, 'long']] as const).map(([minutes, level]) => (
+          <WaitBadge key={minutes} estimate={{ minutes, level, source: 'simulated', asOf: '2026-11-07T19:00:00Z' }} />
+        ))}
       </div>
       <Subheading>Map pin style</Subheading>
       <div className="flex flex-wrap gap-3">

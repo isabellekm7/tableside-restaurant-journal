@@ -3,7 +3,7 @@
 A high-fidelity prototype that helps parents answer one question: **"Will this work for my kids, right now?"**
 All restaurants are **fictional sample data**. Runs on bundled sample data, or on a Supabase back end when configured (see below).
 
-> Work in progress. Phases 1 (foundation), 2 (data and scoring), 3 (onboarding and child profile) and 4 (discovery) are complete. The full README (scoring, swapping the data source, known
+> Work in progress. Phases 1 to 5 (foundation, data and scoring, onboarding, discovery, detail/bail-out/Right now) are complete, plus optional accounts. The full README (scoring, swapping the data source, known
 > limitations) lands in Phase 7.
 
 ## Run
@@ -39,6 +39,9 @@ npm run build
 | `src/features/discovery/` | Explore screen: ranked list, synced map, filters, city search, "near me" |
 | `src/components/map/` | `MapView`: the only file that knows about Leaflet (props-only interface) |
 | `src/lib/discovery/` | Pure ranking, filter and city-matching logic |
+| `src/features/detail/` | Restaurant detail page, per-age breakdown, and the bail-out sheet |
+| `src/features/rightNow/` | "We need to eat soon" mode |
+| `src/features/account/` | Optional accounts: sign up, sign in, reset password |
 | `src/store/` | Zustand stores (kids profile persisted to localStorage; transient UI state) |
 | `src/lib/analytics/` | Local event logger and the 60-second metric |
 
@@ -115,3 +118,20 @@ so the next person sees first-run onboarding. A "session" is one page load.
 - **Only the chosen city persists.** Filters, search and location reset on reload so each test participant starts clean.
 - **Map tiles** come from the public OpenStreetMap tile server with attribution, which is fine for a prototype but not for
   production traffic (use your own tile provider then). Tiles are not cached offline; the list works without them.
+
+## Detail page, bail-out and "Right now"
+
+- **Detail** (`/restaurant/:id`): the verdict in a sentence, then a per-child breakdown (every factor with an icon, the words,
+  and how much it matters for that age; gaps show as "not reported"), honest "watch out for" items, quiet and busy times,
+  each parent-confirmed fact with *how many parents* and *when last confirmed* (old reports are flagged), kid menu
+  highlights, dietary options with a verify-with-the-restaurant note, photo placeholders, and directions.
+- **"We're going here"** (and tapping Directions) logs `restaurant_selected`: the end of the 60-second metric.
+- **Bail-out** ("This isn't working. Show the nearest quick alternative"): `lib/bailout/findAlternative.ts`. Distances are
+  measured from the restaurant you're at. It offers the nearest place that is open, within a short trip, has a fast kitchen,
+  a short wait and a good fit for every child. If none qualifies it offers the nearest decent option and says where it
+  falls short; if nothing is close it says so rather than sending you on a long drive.
+- **Right now** (`/right-now`): `lib/rightNow/recommend.ts`. Strict first (open with time to eat, short wait, close by, good
+  fit), ranked by fit minus waiting and travelling. If nothing qualifies it shows the closest compromises with each one's
+  shortfalls spelled out. All thresholds are in `DEFAULT_RIGHT_NOW_CONFIG`.
+- **Waits are simulated.** They come from `repository.getWait()`, so a real source replaces them with no UI change, and every
+  wait is labelled "(simulated)" on screen.
