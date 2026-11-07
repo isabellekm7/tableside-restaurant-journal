@@ -1,7 +1,33 @@
 import '@testing-library/jest-dom/vitest'
 import { cleanup } from '@testing-library/react'
-import { afterEach } from 'vitest'
+import { afterEach, beforeEach, vi } from 'vitest'
+import { EVENTS_STORAGE_KEY } from '../lib/analytics/logger'
+import { useProfileStore } from '../store/profileStore'
+import { useUiStore } from '../store/uiStore'
+
+// jsdom doesn't implement the modal <dialog> API. Minimal stand-in so Sheet works in tests.
+if (typeof HTMLDialogElement !== 'undefined' && typeof HTMLDialogElement.prototype.showModal !== 'function') {
+  HTMLDialogElement.prototype.showModal = function showModal(this: HTMLDialogElement) {
+    this.setAttribute('open', '')
+  }
+  HTMLDialogElement.prototype.close = function close(this: HTMLDialogElement) {
+    this.removeAttribute('open')
+    this.dispatchEvent(new Event('close'))
+  }
+}
+
+beforeEach(() => {
+  // jsdom doesn't implement scrolling; ScrollRestoration calls it on every navigation.
+  window.scrollTo = vi.fn()
+  // Isolated state for every test; keep the app's console logging out of test output.
+  localStorage.clear()
+  localStorage.removeItem(EVENTS_STORAGE_KEY)
+  useProfileStore.getState().reset()
+  useUiStore.setState({ profileSheetOpen: false })
+  vi.spyOn(console, 'debug').mockImplementation(() => undefined)
+})
 
 afterEach(() => {
   cleanup()
+  vi.restoreAllMocks()
 })
