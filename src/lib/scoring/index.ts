@@ -1,0 +1,5 @@
+export * from './ageBands'
+export { DEFAULT_SCORING_CONFIG } from './config'
+export type { BandConfig, ScoringBand, ScoringConfig } from './config'
+export { scoreChild, scoreRestaurant } from './score'
+export type { ChildFit, KidFitResult, ScorableRestaurant } from './score'
