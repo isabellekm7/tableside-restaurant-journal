@@ -166,6 +166,18 @@
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
   --animate-shimmer: shimmer 1.6s linear infinite;
+  --animate-sheet-in: sheet-in var(--duration-slow) var(--ease-out);
+
+  @keyframes sheet-in {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
   @keyframes shimmer {
     from {

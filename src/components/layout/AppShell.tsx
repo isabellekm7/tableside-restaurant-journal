@@ -1,10 +1,26 @@
-import { Link, Outlet } from 'react-router'
-import { SampleDataTag } from '../ui/SampleDataTag'
+import { Link, Navigate, Outlet, ScrollRestoration, useLocation } from 'react-router'
+import { ProfileChip } from '../../features/profile/ProfileChip'
+import { ProfileSheet } from '../../features/profile/ProfileSheet'
+import { useProfileStore } from '../../store/profileStore'
 import { PrimaryNav } from './PrimaryNav'
+import { SampleDataStrip } from './SampleDataStrip'
 import { Wordmark } from './Wordmark'
 
-/** Landmarks: banner, primary navigation, main. Bottom nav on phones, header nav from md up. */
+/** Internal screens that never wait for onboarding. */
+const GATE_EXEMPT = ['/styleguide', '/debug']
+
+/**
+ * Landmarks: banner, primary navigation, main. Bottom nav on phones, header nav from md up.
+ * First launch (onboarding still pending) redirects to /welcome, remembering where the user was going.
+ */
 export function AppShell() {
+  const onboarding = useProfileStore((s) => s.onboarding)
+  const { pathname } = useLocation()
+
+  if (onboarding === 'pending' && !GATE_EXEMPT.includes(pathname)) {
+    return <Navigate to="/welcome" replace state={{ from: pathname }} />
+  }
+
   return (
     <div className="flex min-h-dvh flex-col">
       <a
@@ -14,14 +30,15 @@ export function AppShell() {
         Skip to content
       </a>
 
-      <header className="sticky top-0 z-20 border-b border-line bg-bg/90 pt-[env(safe-area-inset-top)] backdrop-blur">
+      <header className="sticky top-0 z-20 border-b border-line bg-bg/95 pt-[env(safe-area-inset-top)] backdrop-blur">
+        <SampleDataStrip />
         <div className="mx-auto flex min-h-14 w-full max-w-wide items-center gap-3 px-4">
-          <Link to="/" aria-label="Tableside home" className="rounded-md">
-            <Wordmark />
+          <Link to="/" aria-label="Tableside home" className="shrink-0 rounded-md">
+            <Wordmark collapseOnPhone />
           </Link>
-          <div className="ml-auto flex items-center gap-2">
-            <SampleDataTag />
+          <div className="ml-auto flex min-w-0 items-center gap-2">
             <PrimaryNav variant="header" />
+            <ProfileChip />
           </div>
         </div>
       </header>
@@ -35,6 +52,8 @@ export function AppShell() {
       </main>
 
       <PrimaryNav variant="bottom" />
+      <ProfileSheet />
+      <ScrollRestoration />
     </div>
   )
 }

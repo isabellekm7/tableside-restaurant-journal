@@ -1,20 +1,49 @@
 import { render, screen, within } from '@testing-library/react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
+import { useProfileStore } from '../store/profileStore'
 import { routes } from './routes'
 
 function renderAt(path: string) {
   const router = createMemoryRouter(routes, { initialEntries: [path] })
-  return render(<RouterProvider router={router} />)
+  render(<RouterProvider router={router} />)
+  return router
 }
 
+describe('first-run gate', () => {
+  it('sends a brand-new visitor to onboarding, remembering where they were going', () => {
+    const router = renderAt('/saved')
+    expect(router.state.location.pathname).toBe('/welcome')
+    expect(router.state.location.state).toEqual({ from: '/saved' })
+    expect(screen.getByRole('heading', { level: 1, name: 'Who’s eating?' })).toBeInTheDocument()
+  })
+
+  it('does not gate the internal /styleguide and /debug routes', () => {
+    expect(renderAt('/styleguide').state.location.pathname).toBe('/styleguide')
+  })
+
+  it('does not gate anyone who has finished or skipped onboarding', () => {
+    useProfileStore.getState().skipOnboarding()
+    expect(renderAt('/saved').state.location.pathname).toBe('/saved')
+  })
+})
+
 describe('app shell and routing', () => {
+  beforeEach(() => {
+    useProfileStore.getState().skipOnboarding()
+  })
+
   it('renders landmarks and the sample-data label on every screen', () => {
     renderAt('/')
     expect(screen.getByRole('banner')).toBeInTheDocument()
     expect(screen.getByRole('main')).toBeInTheDocument()
     expect(screen.getAllByRole('navigation', { name: 'Primary' }).length).toBeGreaterThan(0)
     expect(within(screen.getByRole('banner')).getByText('Sample data')).toBeInTheDocument()
+  })
+
+  it('shows the kids chip in the header on every screen', () => {
+    renderAt('/saved')
+    expect(within(screen.getByRole('banner')).getByRole('button', { name: /add your kids/i })).toBeInTheDocument()
   })
 
   it('has a skip link to the main content', () => {
@@ -38,6 +67,6 @@ describe('app shell and routing', () => {
 
   it('serves the hidden debug route', () => {
     renderAt('/debug')
-    expect(screen.getByRole('heading', { name: 'Debug' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Debug' })).toBeInTheDocument()
   })
 })

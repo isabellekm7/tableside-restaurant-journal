@@ -3,7 +3,7 @@
 A high-fidelity prototype that helps parents answer one question: **"Will this work for my kids, right now?"**
 All restaurants are **fictional sample data**. Front end only for now; a Supabase back end comes later.
 
-> Work in progress. Phases 1 (foundation) and 2 (data and scoring) are complete. The full README (scoring, swapping the data source, known
+> Work in progress. Phases 1 (foundation), 2 (data and scoring) and 3 (onboarding and child profile) are complete. The full README (scoring, swapping the data source, known
 > limitations) lands in Phase 7.
 
 ## Run
@@ -32,6 +32,10 @@ npm run build
 | `src/data/seed/` | 28 **fictional** restaurants in Portland and Chicago |
 | `src/lib/scoring/` | Pure kid-fit scoring; **all weights and thresholds are in `config.ts`** |
 
+| `src/features/onboarding/` | "Who's eating?" form shared by first-run onboarding and the header-chip editor |
+| `src/store/` | Zustand stores (kids profile persisted to localStorage; transient UI state) |
+| `src/lib/analytics/` | Local event logger and the 60-second metric |
+
 Internal routes (not linked in the UI): `/styleguide`, `/debug`.
 
 ## Stack
@@ -54,3 +58,10 @@ Age bands are by completed years: infant under 1, toddler 1-2, preschool 3-5, sc
 
 The UI only imports from `src/data` (the `RestaurantRepository` interface and types). To use Supabase, implement that
 interface and change the one line in `src/data/index.ts` that creates `repository`.
+
+## Usability testing: `/debug`
+
+Open `/debug` (not linked anywhere) to see recorded sessions, the **60-second metric** (app open to first
+`restaurant_selected`, also shown excluding onboarding time), and to export the event log as JSON. Events stay on the
+device (console + localStorage) and carry no names or free text. Use **Reset kids and onboarding** between participants
+so the next person sees first-run onboarding. A "session" is one page load.

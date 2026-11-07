@@ -16,11 +16,12 @@ export function LogoMark({ size = 28, className }: { size?: number; className?: 
   )
 }
 
-export function Wordmark({ className }: { className?: string }) {
+/** `collapseOnPhone` shows only the mark below the sm breakpoint (the name stays available to screen readers). */
+export function Wordmark({ className, collapseOnPhone = false }: { className?: string; collapseOnPhone?: boolean }) {
   return (
     <span className={cx('inline-flex items-center gap-2 font-display text-title font-semibold text-primary', className)}>
       <LogoMark />
-      Tableside
+      <span className={collapseOnPhone ? 'max-sm:sr-only' : undefined}>Tableside</span>
     </span>
   )
 }

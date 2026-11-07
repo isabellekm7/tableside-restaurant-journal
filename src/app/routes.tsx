@@ -1,5 +1,7 @@
 import type { RouteObject } from 'react-router'
 import { AppShell } from '../components/layout/AppShell'
+import { DebugPage } from '../features/debug/DebugPage'
+import { OnboardingPage } from '../features/onboarding/OnboardingPage'
 import { StyleguidePage } from '../features/styleguide/StyleguidePage'
 import { HomePage } from '../routes/HomePage'
 import { NotFoundPage } from '../routes/NotFoundPage'
@@ -10,6 +12,7 @@ import { PlaceholderPage } from '../routes/PlaceholderPage'
  * /styleguide and /debug are internal: they are not linked from the navigation.
  */
 export const routes: RouteObject[] = [
+  { path: 'welcome', element: <OnboardingPage /> },
   {
     element: <AppShell />,
     children: [
@@ -17,7 +20,7 @@ export const routes: RouteObject[] = [
       { path: 'restaurant/:id', element: <PlaceholderPage title="Restaurant" phase={5} /> },
       { path: 'saved', element: <PlaceholderPage title="Saved" phase={6} /> },
       { path: 'styleguide', element: <StyleguidePage /> },
-      { path: 'debug', element: <PlaceholderPage title="Debug" phase={3} /> },
+      { path: 'debug', element: <DebugPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },
