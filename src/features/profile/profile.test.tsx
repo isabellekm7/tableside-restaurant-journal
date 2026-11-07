@@ -130,6 +130,9 @@ describe('/debug', () => {
     const { user } = renderApp('/debug')
 
     expect(screen.getByRole('heading', { name: '60-second metric' })).toBeInTheDocument()
+    // Tests run without Supabase configured, and /debug says so plainly.
+    expect(screen.getByText('Not configured.')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Run connection check' })).not.toBeInTheDocument()
     expect(screen.getByText('restaurant_selected')).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Reset kids and onboarding' }))

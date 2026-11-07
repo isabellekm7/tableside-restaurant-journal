@@ -1,7 +1,8 @@
-import { Check, Copy, Download, RefreshCw, Trash2 } from 'lucide-react'
+import { Check, CircleAlert, Copy, Database, Download, RefreshCw, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
+import { backend, clearFallbackIncidents, getFallbackIncidents, type ConnectionCheck } from '../../data'
 import { logger } from '../../lib/analytics/logger'
 import { DECISION_GOAL_MS, formatDuration, goalRate, summarizeSessions } from '../../lib/analytics/metrics'
 import { usePageTitle } from '../../lib/usePageTitle'
@@ -25,6 +26,15 @@ export function DebugPage() {
   const [copied, setCopied] = useState(false)
   const [confirmClear, setConfirmClear] = useState(false)
   const resetProfile = useProfileStore((s) => s.reset)
+  const [connection, setConnection] = useState<ConnectionCheck | 'checking' | null>(null)
+  const [incidents, setIncidents] = useState(() => getFallbackIncidents())
+
+  const runConnectionCheck = async () => {
+    if (!backend.check) return
+    setConnection('checking')
+    setConnection(await backend.check())
+    setIncidents(getFallbackIncidents())
+  }
 
   const refresh = () => setEvents(logger.getEvents())
   const sessions = summarizeSessions(events)
@@ -50,6 +60,62 @@ export function DebugPage() {
           “session” is one page load.
         </p>
       </header>
+
+      <section aria-labelledby="backend-title" className="flex flex-col gap-3">
+        <h2 id="backend-title" className="text-title">
+          Backend connection
+        </h2>
+        <Card className="flex flex-col gap-3">
+          <p className="flex items-center gap-2">
+            <Database size={20} aria-hidden="true" className="text-primary" />
+            {backend.source === 'supabase' ? (
+              <span>
+                Configured to use <strong>Supabase</strong> at <code>{backend.host}</code>.
+              </span>
+            ) : (
+              <span>
+                <strong>Not configured.</strong> Using the bundled sample data on this device. Add
+                <code> VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_PUBLISHABLE_KEY</code> to <code>.env.local</code> and restart.
+              </span>
+            )}
+          </p>
+          {backend.check && (
+            <div className="flex flex-wrap items-center gap-3">
+              <Button variant="secondary" onClick={runConnectionCheck} disabled={connection === 'checking'}>
+                {connection === 'checking' ? 'Checking…' : 'Run connection check'}
+              </Button>
+              <span className="text-small text-text-muted">Read-only: counts rows, creates no account, writes nothing.</span>
+            </div>
+          )}
+          {connection && connection !== 'checking' && (
+            <p role="status" className={connection.ok ? 'flex items-center gap-2 font-semibold text-fit-great-fg' : 'flex items-center gap-2 font-semibold text-danger'}>
+              {connection.ok ? <Check size={18} aria-hidden="true" /> : <CircleAlert size={18} aria-hidden="true" />}
+              {connection.ok
+                ? `Connected: ${connection.restaurants} restaurants and ${connection.cities} cities in the database (${connection.ms} ms).`
+                : `Not connected: ${connection.error ?? 'unknown error'}`}
+            </p>
+          )}
+          <div>
+            <p className="text-small font-semibold">Times this session the app fell back to on-device data</p>
+            {incidents.length === 0 ? (
+              <p className="text-small text-text-muted">None. Everything you've seen came from {backend.source === 'supabase' ? 'the backend' : 'the bundled data'}.</p>
+            ) : (
+              <ul className="mt-1 flex flex-col gap-1 text-small">
+                {incidents.map((i) => (
+                  <li key={i.at + i.operation} className="text-danger">
+                    {new Date(i.at).toLocaleTimeString()} · {i.operation}: {i.message}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {incidents.length > 0 && (
+              <Button variant="ghost" onClick={() => { clearFallbackIncidents(); setIncidents([]) }}>
+                Clear list
+              </Button>
+            )}
+          </div>
+        </Card>
+      </section>
 
       <section aria-labelledby="metric-title" className="flex flex-col gap-3">
         <h2 id="metric-title" className="text-title">
