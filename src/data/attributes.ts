@@ -1,4 +1,4 @@
-import type { AttrKey } from './types'
+import type { AttrKey, DietaryTag } from './types'
 
 /**
  * Human-readable names for every kid-fit attribute (used by the detail page's
@@ -27,3 +27,16 @@ export const ATTRIBUTE_LABELS: Record<AttrKey, string> = {
 }
 
 export const ATTR_KEYS = Object.keys(ATTRIBUTE_LABELS) as AttrKey[]
+
+/** Parent-reported dietary options. Wording is deliberately "options", never "safe". */
+export const DIETARY_LABELS: Record<DietaryTag, string> = {
+  glutenFree: 'Gluten-free options',
+  dairyFree: 'Dairy-free options',
+  nutAllergyAware: 'Nut-allergy aware',
+  vegetarian: 'Vegetarian options',
+  vegan: 'Vegan options',
+}
+
+export const DIETARY_TAGS = Object.keys(DIETARY_LABELS) as DietaryTag[]
+
+export const DIETARY_DISCLAIMER = 'Reported by parents. Always verify with the restaurant, especially for allergies.'

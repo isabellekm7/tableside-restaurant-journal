@@ -32,6 +32,12 @@ export function activeKidWindow(windows: readonly KidWindow[], timeZone: string,
   return windows.find((w) => windowContains(w, local)) ?? null
 }
 
+/** The closing time ("21:00") of the period that's open right now, or null if closed. */
+export function currentClosingTime(hours: readonly OpeningPeriod[], timeZone: string, at: Date): ClockTime | null {
+  const local = localParts(at, timeZone)
+  return hours.find((p) => windowContains({ days: p.days, start: p.open, end: p.close }, local))?.close ?? null
+}
+
 /** Minutes until the restaurant closes, or null if it's closed now. */
 export function minutesUntilClose(hours: readonly OpeningPeriod[], timeZone: string, at: Date): number | null {
   const local = localParts(at, timeZone)

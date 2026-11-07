@@ -14,6 +14,7 @@ export type AppEvent =
   | { type: 'onboarding_skipped' }
   | { type: 'children_set'; source: 'onboarding' | 'header'; bands: AgeBand[]; ages: Array<number | null> }
   | { type: 'filter_used'; filter: string; value: string | number | boolean }
+  | { type: 'location_requested'; outcome: 'ok' | 'outside_sample_cities' | 'denied' | 'unavailable' }
   | { type: 'right_now_used' }
   | { type: 'restaurant_viewed'; restaurantId: string }
   /** The 60-second metric ends here: the parent committed to a place. */

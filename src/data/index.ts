@@ -8,7 +8,7 @@ import type { RestaurantRepository } from './repository'
 
 export const repository: RestaurantRepository = createLocalRepository({ store: getBrowserStore() })
 
-export { ATTRIBUTE_LABELS, ATTR_KEYS } from './attributes'
+export { ATTRIBUTE_LABELS, ATTR_KEYS, DIETARY_DISCLAIMER, DIETARY_LABELS, DIETARY_TAGS } from './attributes'
 export { createLocalRepository } from './localRepository'
 export type { LocalRepositoryOptions } from './localRepository'
 export { createMemoryStore } from './keyValueStore'
