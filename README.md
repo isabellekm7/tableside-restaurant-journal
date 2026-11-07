@@ -1,7 +1,7 @@
 # Tableside
 
 A high-fidelity prototype that helps parents answer one question: **"Will this work for my kids, right now?"**
-All restaurants are **fictional sample data**. Front end only for now; a Supabase back end comes later.
+All restaurants are **fictional sample data**. Runs on bundled sample data, or on a Supabase back end when configured (see below).
 
 > Work in progress. Phases 1 (foundation), 2 (data and scoring), 3 (onboarding and child profile) and 4 (discovery) are complete. The full README (scoring, swapping the data source, known
 > limitations) lands in Phase 7.
@@ -29,6 +29,9 @@ npm run build
 | `src/data/types.ts` | Domain model (restaurant, kid-fit attributes, feedback, trip lists) |
 | `src/data/repository.ts` | The data-access interface the UI depends on |
 | `src/data/localRepository.ts` | Local implementation: bundled sample data + localStorage for user data |
+| `src/data/supabase/` | Supabase implementation: config, defensive row parsers, repository |
+| `src/data/resilientRepository.ts` | Backend first, device always (offline fallback and list sync) |
+| `supabase/` | SQL migrations and the generated sample-data seed |
 | `src/data/seed/` | 28 **fictional** restaurants in Portland and Chicago |
 | `src/lib/scoring/` | Pure kid-fit scoring; **all weights and thresholds are in `config.ts`** |
 
@@ -57,10 +60,34 @@ Leaflet (planned), Vitest + Testing Library.
 
 Age bands are by completed years: infant under 1, toddler 1-2, preschool 3-5, school-age 6-12.
 
-## Swapping the data source
+## Backend (Supabase)
 
-The UI only imports from `src/data` (the `RestaurantRepository` interface and types). To use Supabase, implement that
-interface and change the one line in `src/data/index.ts` that creates `repository`.
+The UI only imports from `src/data` (the `RestaurantRepository` interface and types), so the data source is one decision
+in `src/data/index.ts`.
+
+**Turn it on:** copy `.env.example` to `.env.local` and set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`, then
+restart `npm run dev`. Leave them blank to run on the bundled sample data only. Only the publishable key belongs in a
+`VITE_` variable (it is designed for browsers); the app refuses an `sb_secret_` key. `.env.local` is git-ignored.
+
+**Schema** (`supabase/migrations`, row-level security on every table, least-privilege grants):
+
+| Table | Who can do what |
+|---|---|
+| `cities`, `restaurants`, `restaurant_attributes`, `restaurant_dietary` | Anyone can read. Nobody can write through the API. |
+| `feedback` | Anyone can **insert** (validated by constraints). Nobody can read others' rows; signed-in users can read their own. |
+| `trip_lists` | Private to each (anonymous) signed-in user. |
+
+- **Feedback does not affect scores.** Reports are stored for review only. Without accounts or moderation, letting them
+  move scores would be easy to game. The scorer still uses the catalog's `parentSignals`.
+- **Trip lists need anonymous sign-in**, which is a project setting: Authentication, Sign In / Providers, enable
+  "Allow anonymous sign-ins". Until it is on, lists simply stay on the device (everything still works).
+- **Offline-first:** if the backend can't be reached, catalog reads fall back to the bundled data; feedback and lists are
+  saved on the device first and pushed to the backend later. Library-level retries are off so offline users don't wait.
+- **Sample data:** `npm run db:seed-sql` regenerates `supabase/seed.sql` from `src/data/seed`, so the database and the
+  app can't drift. It is idempotent (upserts) and never touches feedback or lists.
+
+**Known limitations:** the whole (small) catalog is fetched once and filtered in the browser; a list deleted while offline can
+reappear from the backend; anonymous feedback can't be rate-limited without accounts.
 
 ## Usability testing: `/debug`
 

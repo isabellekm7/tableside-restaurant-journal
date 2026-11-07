@@ -7,6 +7,8 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   test: {
     environment: 'jsdom',
+    // Tests are hermetic: never talk to a real backend, whatever is in .env.local.
+    env: { VITE_SUPABASE_URL: '', VITE_SUPABASE_PUBLISHABLE_KEY: '' },
     globals: false,
     setupFiles: ['./src/test/setup.ts'],
     // Vitest blanks CSS by default, including `?raw` imports. tokens.css is read
