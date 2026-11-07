@@ -2,6 +2,7 @@
 export interface KeyValueStore {
   getItem(key: string): string | null
   setItem(key: string, value: string): void
+  removeItem(key: string): void
 }
 
 export function createMemoryStore(initial: Record<string, string> = {}): KeyValueStore {
@@ -10,6 +11,9 @@ export function createMemoryStore(initial: Record<string, string> = {}): KeyValu
     getItem: (key) => map.get(key) ?? null,
     setItem: (key, value) => {
       map.set(key, value)
+    },
+    removeItem: (key) => {
+      map.delete(key)
     },
   }
 }

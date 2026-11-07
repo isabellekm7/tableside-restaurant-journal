@@ -19,6 +19,13 @@ export function bandForAge(ageYears: number): AgeBand {
   return 'schoolAge'
 }
 
+/** Whole-year ages that belong to a band, e.g. toddler → [1, 2]. */
+export function agesForBand(band: AgeBand): number[] {
+  const ages: number[] = []
+  for (let age = MIN_AGE; age <= MAX_AGE; age++) if (bandForAge(age) === band) ages.push(age)
+  return ages
+}
+
 export const BAND_LABEL: Record<AgeBand, string> = {
   infant: 'Infant',
   toddler: 'Toddler',
