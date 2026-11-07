@@ -9,6 +9,8 @@
  */
 import { createClient } from '@supabase/supabase-js'
 import { recordFallback } from './backendStatus'
+import { createDisabledAuth, createSupabaseAuth } from './auth/supabaseAuth'
+import type { AuthService } from './auth/types'
 import { getBrowserStore } from './keyValueStore'
 import { createLocalRepository } from './localRepository'
 import type { RestaurantRepository } from './repository'
@@ -20,6 +22,11 @@ import { createSupabaseRepository } from './supabase/supabaseRepository'
 const local = createLocalRepository({ store: getBrowserStore() })
 const config = readSupabaseConfig(import.meta.env)
 const client = config ? createClient(config.url, config.publishableKey) : null
+
+/** Accounts. Without a configured backend this is a stand-in whose `available` is false. */
+export const auth: AuthService = client
+  ? createSupabaseAuth(client, { redirectUrl: () => `${window.location.origin}/account` })
+  : createDisabledAuth()
 
 export const dataSource: 'supabase' | 'local' = client ? 'supabase' : 'local'
 
@@ -46,6 +53,8 @@ export const backend: {
   check: client ? () => checkSupabaseConnection(client) : null,
 }
 export type { ConnectionCheck } from './supabase/health'
+export type { AccountUser, AuthErrorCode, AuthEvent, AuthResult, AuthService, AuthState, SimpleAuthResult } from './auth/types'
+export { MIN_PASSWORD_LENGTH, normalizeEmail, validateEmail, validateNewPassword } from './auth/validation'
 export { clearFallbackIncidents, getFallbackIncidents } from './backendStatus'
 export type { FallbackIncident } from './backendStatus'
 

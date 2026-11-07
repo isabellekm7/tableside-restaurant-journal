@@ -59,7 +59,7 @@ function setup(overrides: Partial<World> = {}) {
 
     if (url.pathname === '/auth/v1/signup') {
       return world.anonymousSignInWorks
-        ? json(session(Math.floor(clock / 1000) + 3600))
+        ? json(session(Math.floor(Date.now() / 1000) + 3600)) // real time: the auth client checks expiry against the real clock
         : json({ code: 'anonymous_provider_disabled', msg: 'Anonymous sign-ins are disabled' }, 422)
     }
     if (url.pathname === '/rest/v1/cities') return json(world.catalog.cities)
