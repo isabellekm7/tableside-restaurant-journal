@@ -1,0 +1,89 @@
+/*
+ * Map styling. Uses design tokens only (CSS variables from tokens.css), so the
+ * pins always match the kid-fit scale used by badges everywhere else.
+ */
+
+@layer components {
+  /* Calmer, warmer tiles that sit well with the palette. */
+  .leaflet-tile-pane {
+    filter: saturate(0.7) sepia(0.12);
+  }
+
+  .leaflet-container {
+    font-family: var(--font-sans);
+    background: var(--color-surface-sunken);
+  }
+
+  /* Bigger touch targets for the zoom buttons. */
+  .leaflet-bar a {
+    width: var(--size-touch);
+    height: var(--size-touch);
+    line-height: var(--size-touch);
+    font-size: 1.25rem;
+    color: var(--color-text);
+  }
+
+  .leaflet-control-attribution {
+    font-size: var(--text-caption);
+    color: var(--color-text-muted);
+  }
+
+  .ts-pin-wrap {
+    background: none;
+    border: 0;
+  }
+
+  .ts-pin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-touch);
+    height: var(--size-touch);
+    padding: 0;
+    border: 3px solid var(--color-white);
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-raised);
+    color: var(--color-on-solid);
+    font-family: var(--font-sans);
+    font-size: var(--text-small);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition:
+      transform var(--duration-fast) var(--ease-out),
+      box-shadow var(--duration-fast) var(--ease-out);
+  }
+
+  .ts-pin--great {
+    background: var(--color-fit-great-solid);
+  }
+  .ts-pin--good {
+    background: var(--color-fit-good-solid);
+  }
+  .ts-pin--mixed {
+    background: var(--color-fit-mixed-solid);
+  }
+  .ts-pin--poor {
+    background: var(--color-fit-poor-solid);
+  }
+  .ts-pin--unknown {
+    background: var(--color-fit-unknown-solid);
+  }
+
+  .ts-pin:hover {
+    transform: scale(1.08);
+  }
+
+  /* Selected: bigger, with a dark ring so it reads without relying on colour. */
+  .ts-pin.is-selected {
+    transform: scale(1.25);
+    box-shadow:
+      0 0 0 3px var(--color-ink),
+      var(--shadow-raised);
+  }
+
+  .ts-pin:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+}
