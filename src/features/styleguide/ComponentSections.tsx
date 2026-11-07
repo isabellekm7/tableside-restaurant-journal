@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { Button, ButtonLink, IconButton } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
 import { Chip } from '../../components/ui/Chip'
+import { ChoiceChips } from '../../components/ui/ChoiceChips'
+import { Notice } from '../../components/ui/Notice'
 import { FitBadge } from '../../components/ui/FitBadge'
 import { SampleDataTag } from '../../components/ui/SampleDataTag'
 import { Skeleton } from '../../components/ui/Skeleton'
@@ -144,6 +146,31 @@ function CardsDemo() {
   )
 }
 
+function NoticesDemo() {
+  const [price, setPrice] = useState('any')
+  return (
+    <StyleguideSection id="notices" title="Notices and choice chips" description="Inline banners (always icon + words) and single-choice pills built on real radio inputs.">
+      <div className="flex max-w-xl flex-col gap-3">
+        <Notice>Showing a general family fit. Add your kids’ ages for a score that’s specific to them.</Notice>
+        <Notice tone="warning" action={<Button variant="secondary">Clear filters</Button>}>
+          No great fit nearby. The closest compromises are listed first.
+        </Notice>
+        <Notice tone="offline">You’re offline. Sample restaurants still work; the map may not load.</Notice>
+      </div>
+      <ChoiceChips
+        legend="Price"
+        value={price}
+        onChange={setPrice}
+        options={[
+          { value: 'any', label: 'Any' },
+          { value: '1', label: '$ or less' },
+          { value: '2', label: '$$ or less' },
+        ]}
+      />
+    </StyleguideSection>
+  )
+}
+
 function LoadingDemo() {
   return (
     <StyleguideSection id="loading" title="Loading skeletons" description="Shimmer is disabled when reduced motion is requested.">
@@ -216,6 +243,7 @@ export function ComponentSections() {
       <ChipsDemo />
       <FitDemo />
       <CardsDemo />
+      <NoticesDemo />
       <LoadingDemo />
       <FieldsDemo />
       <StatesDemo />

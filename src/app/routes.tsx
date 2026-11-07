@@ -1,9 +1,9 @@
 import type { RouteObject } from 'react-router'
 import { AppShell } from '../components/layout/AppShell'
 import { DebugPage } from '../features/debug/DebugPage'
+import { DiscoveryPage } from '../features/discovery/DiscoveryPage'
 import { OnboardingPage } from '../features/onboarding/OnboardingPage'
 import { StyleguidePage } from '../features/styleguide/StyleguidePage'
-import { HomePage } from '../routes/HomePage'
 import { NotFoundPage } from '../routes/NotFoundPage'
 import { PlaceholderPage } from '../routes/PlaceholderPage'
 
@@ -16,7 +16,7 @@ export const routes: RouteObject[] = [
   {
     element: <AppShell />,
     children: [
-      { index: true, element: <HomePage /> },
+      { index: true, element: <DiscoveryPage /> },
       { path: 'restaurant/:id', element: <PlaceholderPage title="Restaurant" phase={5} /> },
       { path: 'saved', element: <PlaceholderPage title="Saved" phase={6} /> },
       { path: 'styleguide', element: <StyleguidePage /> },

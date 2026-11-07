@@ -12,6 +12,7 @@ const toc = [
   ['chips', 'Chips'],
   ['fit', 'Kid-fit'],
   ['cards', 'Cards'],
+  ['notices', 'Notices'],
   ['loading', 'Loading'],
   ['fields', 'Fields'],
   ['states', 'States'],
