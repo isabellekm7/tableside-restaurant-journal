@@ -1,4 +1,5 @@
 import { Clock, MapPin } from 'lucide-react'
+import type { ReactNode } from 'react'
 import { Link } from 'react-router'
 import { Button } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
@@ -11,6 +12,7 @@ import type { RankedRestaurant } from '../../lib/discovery/rank'
 import { FIT_LEVEL_LABEL } from '../../lib/fit'
 import { formatDistance, formatTravel } from '../../lib/geo/format'
 import { formatClock } from '../../lib/time/localTime'
+import { SaveButton } from '../saved/SaveButton'
 
 export interface RestaurantCardProps {
   item: RankedRestaurant
@@ -21,6 +23,8 @@ export interface RestaurantCardProps {
   compact?: boolean
   /** Shows a "Show on map" button when provided. */
   onShowOnMap?: () => void
+  /** Replaces the save button, e.g. a "Remove" button inside a trip list. */
+  footerAction?: ReactNode
 }
 
 function OpenStatus({ item }: { item: RankedRestaurant }) {
@@ -34,7 +38,7 @@ function OpenStatus({ item }: { item: RankedRestaurant }) {
 }
 
 /** One restaurant in the results: age-specific fit, the reason in a sentence, and what it takes to get there. */
-export function RestaurantCard({ item, selected = false, dietaryTags = [], compact = false, onShowOnMap }: RestaurantCardProps) {
+export function RestaurantCard({ item, selected = false, dietaryTags = [], compact = false, onShowOnMap, footerAction }: RestaurantCardProps) {
   const { restaurant, fit } = item
   const titleId = `restaurant-${restaurant.id}`
   const known = fit.level !== 'unknown'
@@ -103,6 +107,9 @@ export function RestaurantCard({ item, selected = false, dietaryTags = [], compa
 
       <div className={cx('mt-3 flex flex-wrap items-center justify-between gap-2')}>
         <SampleDataTag />
+        <span className="relative z-10 flex items-center gap-1 print:hidden">
+          {footerAction ?? <SaveButton restaurantId={restaurant.id} restaurantName={restaurant.name} />}
+        </span>
         {onShowOnMap && (
           <Button
             variant="ghost"

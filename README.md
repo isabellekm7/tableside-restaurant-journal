@@ -3,7 +3,7 @@
 A high-fidelity prototype that helps parents answer one question: **"Will this work for my kids, right now?"**
 All restaurants are **fictional sample data**. Runs on bundled sample data, or on a Supabase back end when configured (see below).
 
-> Work in progress. Phases 1 to 5 (foundation, data and scoring, onboarding, discovery, detail/bail-out/Right now) are complete, plus optional accounts. The full README (scoring, swapping the data source, known
+> Work in progress. Phases 1 to 6 (foundation, data and scoring, onboarding, discovery, detail/bail-out/Right now, feedback/saved lists/offline) are complete, plus optional accounts. The full README (scoring, swapping the data source, known
 > limitations) lands in Phase 7.
 
 ## Run
@@ -41,6 +41,8 @@ npm run build
 | `src/lib/discovery/` | Pure ranking, filter and city-matching logic |
 | `src/features/detail/` | Restaurant detail page, per-age breakdown, and the bail-out sheet |
 | `src/features/rightNow/` | "We need to eat soon" mode |
+| `src/features/feedback/` | The quick-tap "how did it go?" report |
+| `src/features/saved/` | Saved trip lists, the shareable summary, and the save button |
 | `src/features/account/` | Optional accounts: sign up, sign in, reset password |
 | `src/store/` | Zustand stores (kids profile persisted to localStorage; transient UI state) |
 | `src/lib/analytics/` | Local event logger and the 60-second metric |
@@ -135,3 +137,21 @@ so the next person sees first-run onboarding. A "session" is one page load.
   shortfalls spelled out. All thresholds are in `DEFAULT_RIGHT_NOW_CONFIG`.
 - **Waits are simulated.** They come from `repository.getWait()`, so a real source replaces them with no UI change, and every
   wait is labelled "(simulated)" on screen.
+
+## Feedback, saved lists and offline
+
+- **Parent feedback** ("Been here? Share how it went" on a restaurant page): six quick taps (which age groups were there, high
+  chair, staff welcome, wait, noise, would you return) plus an optional **Not for us** tap for feeling unwelcome. No free text
+  by design. Each report is tagged with the age bands of the children who were there, so scores can become age-specific later.
+- **Reports don't change anyone's scores.** They are stored (on the device, and in Supabase if configured) for review. The
+  author's own page counts them, labelled "includes your report" (`lib/feedback/blend.ts`). Anonymous reports can't be
+  rate-limited without accounts, which is exactly why they stay out of public numbers. A report made offline stays on that device.
+- **Saved lists** (`/saved`): tap the bookmark on any card or page to save to your active list ("My trip" is created
+  automatically). Create, rename, switch and delete lists; each list is scored for *your* kids. Lists are saved **on the device
+  first**, so they work offline, and sync to your account when you're signed in.
+- **Sharing:** "Share" copies a link (`/shared?n=<name>&r=<ids>`) that contains only the list's name and place ids, with no
+  server and no account. The recipient sees the places scored for *their* kids and can "Save a copy". **Print** produces a clean
+  one-page summary (navigation is hidden for print).
+- **Offline:** a service worker (via `vite-plugin-pwa`, production builds only) precaches the app, so any screen opens with no
+  connection and `/saved` keeps working. Supabase requests are never cached. Map tiles aren't cached either, so the map shows a
+  notice while the list keeps working. Try it: `npm run build && npm run preview`, open the app once, stop the server, reload.

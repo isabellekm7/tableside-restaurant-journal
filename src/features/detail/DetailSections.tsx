@@ -3,10 +3,11 @@ import type { ReactNode } from 'react'
 import { Card } from '../../components/ui/Card'
 import { FitBadge } from '../../components/ui/FitBadge'
 import { WaitBadge } from '../../components/ui/WaitBadge'
-import { ATTRIBUTE_LABELS, DIETARY_DISCLAIMER, DIETARY_LABELS, type City, type KidAttributes, type Restaurant, type WaitEstimate } from '../../data'
+import { ATTRIBUTE_LABELS, DIETARY_DISCLAIMER, DIETARY_LABELS, type City, type KidAttributes, type ParentFeedback, type ParentSignals, type Restaurant, type WaitEstimate } from '../../data'
 import { cx } from '../../lib/cx'
 import type { ChildFit, KidFitResult } from '../../lib/scoring'
 import { breakdownForBand, formatAttributeValue, type BreakdownRow, type BreakdownStatus } from '../../lib/scoring/breakdown'
+import { BAND_LABEL } from '../../lib/scoring/ageBands'
 import { activeKidWindow } from '../../lib/time/hours'
 import { describeConfirmed, formatDays, formatTimeRange } from '../../lib/time/format'
 import { ATTRIBUTE_GROUPS } from './attributeGroups'
@@ -241,10 +242,15 @@ export function MenuAndDietary({ restaurant }: { restaurant: Restaurant }) {
   )
 }
 
-export function ParentReports({ restaurant }: { restaurant: Restaurant }) {
-  const { reportCount, wouldReturnCount, notForUsCount } = restaurant.parentSignals
+export function ParentReports({ signals, includesYours }: { signals: ParentSignals; includesYours: boolean }) {
+  const { reportCount, wouldReturnCount, notForUsCount } = signals
   if (reportCount < 5) {
-    return <p className="text-small text-text-muted">Only {reportCount} parent {reportCount === 1 ? 'report' : 'reports'} so far, so we can’t say much yet.</p>
+    return (
+      <p className="text-small text-text-muted">
+        Only {reportCount} parent {reportCount === 1 ? 'report' : 'reports'} so far, so we can’t say much yet.
+        {includesYours && ' (Includes your report.)'}
+      </p>
+    )
   }
   const pct = Math.round((wouldReturnCount / reportCount) * 100)
   return (
@@ -254,8 +260,33 @@ export function ParentReports({ restaurant }: { restaurant: Restaurant }) {
         <strong>{reportCount} parents</strong> reported · <strong>{pct}%</strong> would return with kids ·{' '}
         <strong className={notForUsCount > 0 ? 'text-fit-poor-fg' : undefined}>{notForUsCount}</strong> said they felt unwelcome.
       </span>
-      <span className="text-text-muted">(Sample counts.)</span>
+      <span className="text-text-muted">{includesYours ? '(Sample counts, includes your report.)' : '(Sample counts.)'}</span>
     </p>
+  )
+}
+
+const WAIT_WORDS = (m: number) => (m === 0 ? 'No wait' : m >= 30 ? 'Waited 30+ min' : `Waited ~${m} min`)
+
+/** The reports you've sent for this place, so you can see exactly what you said. */
+export function OwnReports({ reports, now }: { reports: readonly ParentFeedback[]; now: Date }) {
+  if (reports.length === 0) return null
+  return (
+    <div>
+      <h3 className="font-sans text-body font-semibold">Your reports</h3>
+      <ul className="mt-2 flex flex-col gap-2">
+        {reports.map((r) => (
+          <li key={r.id} className="rounded-md border border-line bg-surface px-3 py-2 text-small">
+            <p className="font-semibold">
+              {describeConfirmed(r.createdAt.slice(0, 10), now).label} · {r.reporterBands.map((b) => BAND_LABEL[b]).join(', ')}
+            </p>
+            <p className="text-text-muted">
+              {WAIT_WORDS(r.waitMinutes)} · {r.noise} room · staff welcoming: {r.staffWelcoming} · {r.wouldReturn ? 'would return' : 'wouldn’t return'}
+            </p>
+            {r.notForUs && <p className="mt-1 font-semibold text-fit-poor-fg">You marked this “Not for us”.</p>}
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 

@@ -1,4 +1,4 @@
-import { ChevronLeft, ExternalLink, LifeBuoy, MapPin } from 'lucide-react'
+import { ChevronLeft, ExternalLink, LifeBuoy, MapPin, MessageSquarePlus } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import { Button, ButtonLink } from '../../components/ui/Button'
@@ -10,6 +10,7 @@ import { StateMessage } from '../../components/ui/StateMessage'
 import { WaitBadge } from '../../components/ui/WaitBadge'
 import type { City, Restaurant, WaitEstimate } from '../../data'
 import { track } from '../../lib/analytics/logger'
+import { blendSignals } from '../../lib/feedback/blend'
 import { PRICE_LABELS } from '../../lib/discovery/filters'
 import { rankRestaurants } from '../../lib/discovery/rank'
 import { FIT_LEVEL_LABEL } from '../../lib/fit'
@@ -18,9 +19,12 @@ import { useNow } from '../../lib/hooks'
 import { formatClock } from '../../lib/time/localTime'
 import { usePageTitle } from '../../lib/usePageTitle'
 import { useProfileStore } from '../../store/profileStore'
+import { FeedbackSheet } from '../feedback/FeedbackSheet'
+import { SaveButton } from '../saved/SaveButton'
+import { useOwnFeedback } from '../feedback/useOwnFeedback'
 import { useOrigin } from '../shared/useOrigin'
 import { BailOutSheet } from './BailOutSheet'
-import { ConfirmedFacts, FitBreakdown, HoursAndWaits, MenuAndDietary, ParentReports, PhotoPlaceholders, Section, WatchOuts } from './DetailSections'
+import { ConfirmedFacts, FitBreakdown, HoursAndWaits, MenuAndDietary, OwnReports, ParentReports, PhotoPlaceholders, Section, WatchOuts } from './DetailSections'
 import { directionsUrl } from './directions'
 import { useRestaurantDetail } from './useRestaurantDetail'
 
@@ -37,6 +41,9 @@ function DetailView({ restaurant, city, wait }: { restaurant: Restaurant; city: 
   const location = useLocation()
   const [chosen, setChosen] = useState(() => wasChosen(location.state))
   const [bailOpen, setBailOpen] = useState(false)
+  const [feedbackOpen, setFeedbackOpen] = useState(false)
+  const { own, add: addOwn } = useOwnFeedback(restaurant.id)
+  const blended = useMemo(() => blendSignals(restaurant.parentSignals, own), [restaurant.parentSignals, own])
 
   useEffect(() => {
     track({ type: 'restaurant_viewed', restaurantId: restaurant.id })
@@ -93,7 +100,10 @@ function DetailView({ restaurant, city, wait }: { restaurant: Restaurant; city: 
           )}{' '}
           · {formatDistance(item.distanceKm)} · {formatTravel(item.travel)} from {originLabel}
         </p>
-        <SampleDataTag className="w-fit" />
+        <div className="flex flex-wrap items-center gap-3">
+          <SaveButton restaurantId={restaurant.id} restaurantName={restaurant.name} variant="button" />
+          <SampleDataTag />
+        </div>
       </header>
 
       {chosen && (
@@ -141,7 +151,11 @@ function DetailView({ restaurant, city, wait }: { restaurant: Restaurant; city: 
       </Section>
 
       <Section id="reports" title="What parents say">
-        <ParentReports restaurant={restaurant} />
+        <ParentReports signals={blended.signals} includesYours={blended.includesYours} />
+        <OwnReports reports={own} now={now} />
+        <Button variant="secondary" leadingIcon={<MessageSquarePlus size={18} aria-hidden="true" />} onClick={() => setFeedbackOpen(true)} className="w-fit">
+          Been here? Share how it went
+        </Button>
       </Section>
 
       <Section id="photos" title="Photos">
@@ -192,6 +206,14 @@ function DetailView({ restaurant, city, wait }: { restaurant: Restaurant; city: 
           </>
         )}
       </div>
+
+      <FeedbackSheet
+        open={feedbackOpen}
+        onClose={() => setFeedbackOpen(false)}
+        restaurantId={restaurant.id}
+        restaurantName={restaurant.name}
+        onSubmitted={addOwn}
+      />
 
       <BailOutSheet
         open={bailOpen}

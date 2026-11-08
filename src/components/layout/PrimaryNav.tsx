@@ -15,7 +15,7 @@ export function PrimaryNav({ variant }: { variant: 'bottom' | 'header' }) {
       aria-label="Primary"
       className={cx(
         variant === 'bottom'
-          ? 'fixed inset-x-0 bottom-0 z-20 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] md:hidden'
+          ? 'fixed inset-x-0 bottom-0 z-20 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] md:hidden print:hidden'
           : 'hidden md:block',
       )}
     >

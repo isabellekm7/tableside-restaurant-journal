@@ -77,3 +77,18 @@ export const hasGoodFit = (items: readonly RankedRestaurant[]): boolean =>
 export function closestCompromises(items: readonly RankedRestaurant[], count = 3): RankedRestaurant[] {
   return sortRanked(items, 'fit').slice(0, count)
 }
+
+/**
+ * Score a mixed set (e.g. a trip list spanning two cities) with each place measured from
+ * ITS OWN city's centre, keeping the order given. Places whose city is unknown are skipped.
+ */
+export function rankInOwnCity(input: Omit<RankInput, 'origin' | 'maxDistanceKm' | 'sort'>): RankedRestaurant[] {
+  const items: RankedRestaurant[] = []
+  for (const restaurant of input.restaurants) {
+    const city = input.cities.find((c) => c.id === restaurant.cityId)
+    if (!city) continue
+    const [item] = rankRestaurants({ ...input, restaurants: [restaurant], origin: city.center, maxDistanceKm: null, sort: 'fit' })
+    if (item) items.push(item)
+  }
+  return items
+}

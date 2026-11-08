@@ -4,6 +4,7 @@ import { afterEach, beforeEach, vi } from 'vitest'
 import { EVENTS_STORAGE_KEY } from '../lib/analytics/logger'
 import { auth } from '../data'
 import { useAuthStore } from '../store/authStore'
+import { useTripStore } from '../store/tripStore'
 import { initialDiscoveryData, useDiscoveryStore } from '../store/discoveryStore'
 import { useProfileStore } from '../store/profileStore'
 import { useUiStore } from '../store/uiStore'
@@ -30,6 +31,7 @@ beforeEach(() => {
   useUiStore.setState({ profileSheetOpen: false })
   useDiscoveryStore.setState(initialDiscoveryData)
   useAuthStore.setState({ service: auth, user: null, ready: false, recovering: false })
+  useTripStore.setState({ lists: [], loaded: false, activeListId: null, error: null })
   vi.spyOn(console, 'debug').mockImplementation(() => undefined)
 })
 
