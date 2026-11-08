@@ -40,6 +40,9 @@ export function Sheet({ open, onClose, title, children }: SheetProps) {
     <dialog
       ref={ref}
       aria-labelledby={titleId}
+      // Esc fires `cancel` immediately, but the browser delivers `close` as a later queued task.
+      // Listening to both keeps our state in step with the dialog, so an instant re-open is never swallowed.
+      onCancel={onClose}
       onClose={onClose}
       onClick={(e) => {
         // A click on the backdrop lands on the <dialog> element itself.
