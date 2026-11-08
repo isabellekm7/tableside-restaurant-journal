@@ -81,7 +81,7 @@ export function IconButton({ label, icon, className, type = 'button', ...rest }:
       type={type}
       aria-label={label}
       className={cx(
-        'inline-flex size-(--size-touch) items-center justify-center rounded-pill text-text-muted',
+        'inline-flex size-(--size-touch) shrink-0 items-center justify-center rounded-pill text-text-muted',
         'transition-colors duration-(--duration-fast) hover:bg-surface-sunken hover:text-text',
         'motion-safe:active:scale-95 disabled:opacity-50',
         className,

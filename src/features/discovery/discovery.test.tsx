@@ -240,7 +240,7 @@ describe('Explore: city and location', () => {
     mockGeolocation({ lat: 41.9, lng: -87.7 })
     const { user } = renderExplore()
     await restaurantList()
-    await user.click(screen.getByRole('button', { name: 'Use my location' }))
+    await user.click(screen.getByRole('button', { name: 'Near me' }))
 
     expect(await screen.findByText('Showing places near you in Chicago.')).toBeInTheDocument()
     expect(screen.getByLabelText('City')).toHaveValue('Chicago, IL')
@@ -258,7 +258,7 @@ describe('Explore: city and location', () => {
     mockGeolocation({ lat: 30.27, lng: -97.74 }) // Austin
     const { user } = renderExplore()
     await restaurantList()
-    await user.click(screen.getByRole('button', { name: 'Use my location' }))
+    await user.click(screen.getByRole('button', { name: 'Near me' }))
     expect(await screen.findByText(/outside our sample cities/)).toBeInTheDocument()
     expect(screen.getByLabelText('City')).toHaveValue('Portland, OR')
     expect(screen.getByText('14 places')).toBeInTheDocument()
@@ -268,7 +268,7 @@ describe('Explore: city and location', () => {
     mockGeolocation({ denied: true })
     const { user } = renderExplore()
     await restaurantList()
-    await user.click(screen.getByRole('button', { name: 'Use my location' }))
+    await user.click(screen.getByRole('button', { name: 'Near me' }))
     expect(await screen.findByText(/Location is off for this site/)).toBeInTheDocument()
     expect(logger.getEvents().at(-1)).toMatchObject({ outcome: 'denied' })
     expect(screen.getByText('14 places')).toBeInTheDocument()
@@ -277,7 +277,7 @@ describe('Explore: city and location', () => {
   it('says so when the browser has no location support', async () => {
     const { user } = renderExplore()
     await restaurantList()
-    await user.click(screen.getByRole('button', { name: 'Use my location' }))
+    await user.click(screen.getByRole('button', { name: 'Near me' }))
     expect(await screen.findByText(/couldn’t find your location/)).toBeInTheDocument()
   })
 })
@@ -289,7 +289,8 @@ describe('Explore: list and map stay in sync', () => {
     expect(screen.queryByRole('region', { name: 'Map of restaurants in Portland' })).not.toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Map' }))
-    expect(screen.getByRole('region', { name: 'Map of restaurants in Portland' })).toBeInTheDocument()
+    // The map is loaded on demand, so it appears a moment after the toggle.
+    expect(await screen.findByRole('region', { name: 'Map of restaurants in Portland' })).toBeInTheDocument()
     expect(screen.queryByRole('list', { name: 'Restaurants' })).not.toBeInTheDocument()
 
     // Every pin carries the same score words as its card; unknown shows "?".
@@ -303,7 +304,7 @@ describe('Explore: list and map stay in sync', () => {
     const { user } = renderExplore()
     await restaurantList()
     await user.click(screen.getByRole('button', { name: 'Map' }))
-    await user.click(screen.getByRole('button', { name: /^Little Fern Kitchen, Great fit/ }))
+    await user.click(await screen.findByRole('button', { name: /^Little Fern Kitchen, Great fit/ }))
 
     expect(useDiscoveryStore.getState().selectedId).toBe('pdx-little-fern-kitchen')
     expect(screen.getByRole('article', { name: 'Little Fern Kitchen' })).toHaveAttribute('aria-current', 'true')
@@ -321,16 +322,16 @@ describe('Explore: list and map stay in sync', () => {
   it('"Show on map" on a card jumps to the map with that pin selected', async () => {
     const { user } = renderExplore()
     await restaurantList()
-    await user.click(screen.getByRole('button', { name: 'Show Little Fern Kitchen on the map' }))
+    await user.click(screen.getByRole('button', { name: 'Show on map: Little Fern Kitchen' }))
 
-    expect(screen.getByRole('region', { name: 'Map of restaurants in Portland' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /^Little Fern Kitchen, Great fit/ })).toHaveAttribute('aria-pressed', 'true')
+    expect(await screen.findByRole('region', { name: 'Map of restaurants in Portland' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: /^Little Fern Kitchen, Great fit/ })).toHaveAttribute('aria-pressed', 'true')
   })
 
   it('drops the selection when filters remove the selected place', async () => {
     const { user } = renderExplore()
     await restaurantList()
-    await user.click(screen.getByRole('button', { name: 'Show Velvet Ladle on the map'.replace('Velvet', 'The Velvet') }))
+    await user.click(screen.getByRole('button', { name: 'Show on map: Velvet Ladle'.replace('Velvet', 'The Velvet') }))
     await user.click(screen.getByRole('button', { name: 'List' }))
     await user.click(screen.getByRole('button', { name: 'Open now' })) // Velvet Ladle is closed
     await waitFor(() => expect(useDiscoveryStore.getState().selectedId).toBeNull())
@@ -350,7 +351,7 @@ describe('Explore: error and offline states', () => {
   it('tells the user when they are offline, while the sample data keeps working', async () => {
     Object.defineProperty(navigator, 'onLine', { value: false, configurable: true })
     renderExplore()
-    expect(await screen.findByText(/You’re offline\. Sample restaurants still work/)).toBeInTheDocument()
+    expect(await screen.findByText(/You’re offline\. Your saved lists and the sample restaurants still work/)).toBeInTheDocument()
     expect(await restaurantList()).toBeInTheDocument()
   })
 })

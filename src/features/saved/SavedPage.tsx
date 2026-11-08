@@ -1,13 +1,11 @@
-import { Check, Copy, Pencil, Plus, Printer, Share2, Trash2, WifiOff } from 'lucide-react'
+import { Check, Copy, Pencil, Plus, Printer, Share2, Trash2 } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { Button, ButtonLink } from '../../components/ui/Button'
 import { ChoiceChips } from '../../components/ui/ChoiceChips'
-import { Notice } from '../../components/ui/Notice'
 import { Skeleton } from '../../components/ui/Skeleton'
 import { StateMessage } from '../../components/ui/StateMessage'
 import { TextField } from '../../components/ui/TextField'
 import type { TripList } from '../../data'
-import { useOnlineStatus } from '../../lib/hooks'
 import { buildShareUrl } from '../../lib/share/shareLink'
 import { MAX_LIST_NAME } from '../../lib/trips/lists'
 import { usePageTitle } from '../../lib/usePageTitle'
@@ -136,7 +134,6 @@ function ListPanel({ list, isActive }: { list: TripList; isActive: boolean }) {
 /** /saved: your trip lists. They live on this device first, so they work offline. */
 export function SavedPage() {
   usePageTitle('Saved')
-  const online = useOnlineStatus()
   const { lists, loaded, activeListId, error, createList } = useTripStore()
   const [viewingId, setViewingId] = useState<string | null>(null)
   const viewing = lists.find((l) => l.id === (viewingId ?? activeListId)) ?? lists[0]
@@ -148,13 +145,6 @@ export function SavedPage() {
         <p className="mt-1 text-text-muted">Your shortlist for the trip. Saved on this device, so it works without a signal.</p>
       </div>
 
-      {!online && (
-        <Notice tone="offline">
-          <span className="inline-flex items-center gap-1.5">
-            <WifiOff size={16} aria-hidden="true" /> You’re offline. Your lists are on this device and still work.
-          </span>
-        </Notice>
-      )}
       {error && (
         <p role="alert" className="rounded-md bg-danger-bg px-3 py-2 text-small font-medium text-danger">
           {error}

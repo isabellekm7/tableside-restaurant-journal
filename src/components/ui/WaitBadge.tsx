@@ -20,7 +20,7 @@ export function WaitBadge({ estimate, className }: { estimate: WaitEstimate; cla
       <span>
         {WORDS[estimate.level]} · {estimate.minutes === 0 ? 'no wait' : `~${estimate.minutes} min`}
       </span>
-      {simulated && <span className="font-medium opacity-80">(simulated)</span>}
+      {simulated && <span className="font-medium">(simulated)</span>}
     </span>
   )
 }

@@ -8,7 +8,7 @@ import type { CityId } from '../../data'
 import { track } from '../../lib/analytics/logger'
 import { SORT_LABELS, activeFilterCount, maxDistanceKm, type Filters, type SortMode } from '../../lib/discovery/filters'
 import { closestCompromises, hasGoodFit, rankRestaurants } from '../../lib/discovery/rank'
-import { useMediaQuery, useNow, useOnlineStatus, useReducedMotion } from '../../lib/hooks'
+import { useMediaQuery, useNow, useReducedMotion } from '../../lib/hooks'
 import { usePageTitle } from '../../lib/usePageTitle'
 import { useDiscoveryStore } from '../../store/discoveryStore'
 import { useProfileStore } from '../../store/profileStore'
@@ -33,7 +33,6 @@ export function DiscoveryPage() {
   const { cityId, origin, filters, sort, search, selectedId, view } = store
 
   const now = useNow()
-  const online = useOnlineStatus()
   const isWide = useMediaQuery('(min-width: 1024px)')
   const reducedMotion = useReducedMotion()
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -120,7 +119,7 @@ export function DiscoveryPage() {
   if (data.status === 'error') {
     return (
       <div className="mx-auto w-full max-w-wide px-4 py-8">
-        <StateMessage kind="error" title="We couldn’t load restaurants" action={<Button onClick={retry}>Try again</Button>}>
+        <StateMessage kind="error" level={1} title="We couldn’t load restaurants" action={<Button onClick={retry}>Try again</Button>}>
           Something went wrong on our side. Your saved lists are still on this device.
         </StateMessage>
       </div>
@@ -231,16 +230,10 @@ export function DiscoveryPage() {
     <div className="mx-auto w-full max-w-wide px-4 py-4">
       <h1 className="sr-only">Find a restaurant that works for your kids</h1>
 
-      {!online && (
-        <Notice tone="offline" className="mb-3">
-          You’re offline. Sample restaurants still work; the map may not load.
-        </Notice>
-      )}
-
       <div className="grid gap-4 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-6">
         <div className="flex min-w-0 flex-col gap-4">
           {/* The fastest path to an answer: one prominent button, above everything else. */}
-          <ButtonLink to="/right-now" variant="accent" size="lg" fullWidth leadingIcon={<Zap size={22} aria-hidden="true" />} className="h-auto flex-col gap-0 py-3">
+          <ButtonLink to="/right-now" variant="accent" size="lg" fullWidth leadingIcon={<Zap size={22} aria-hidden="true" />} className="h-auto flex-col gap-0 py-3 md:max-w-md">
             <span>We need to eat soon</span>
             <span className="text-small font-medium opacity-95">Open now · close by · short wait</span>
           </ButtonLink>
@@ -281,7 +274,7 @@ export function DiscoveryPage() {
                   aria-pressed={view === value}
                   onClick={() => store.setView(value)}
                   className={
-                    'inline-flex min-h-10 items-center gap-1.5 rounded-pill px-4 text-small font-semibold transition-colors duration-(--duration-fast) ' +
+                    'inline-flex min-h-(--size-touch) items-center gap-1.5 rounded-pill px-4 text-small font-semibold transition-colors duration-(--duration-fast) ' +
                     (view === value ? 'bg-primary text-on-primary' : 'text-text-muted hover:text-text')
                   }
                 >

@@ -332,7 +332,7 @@ export function AccountPage() {
 
   if (!service.available) {
     return (
-      <StateMessage kind="offline" title="Accounts aren’t available here">
+      <StateMessage kind="offline" level={1} title="Accounts aren’t available here">
         This copy of Tableside is running on its bundled sample data with no backend, so there’s nothing to sign in to. Everything else works.
       </StateMessage>
     )

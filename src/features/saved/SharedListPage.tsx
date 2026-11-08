@@ -18,7 +18,7 @@ export function SharedListPage() {
 
   if (!shared) {
     return (
-      <StateMessage kind="empty" title="This link doesn’t have a list in it" action={<ButtonLink to="/">Find a restaurant</ButtonLink>}>
+      <StateMessage kind="empty" level={1} title="This link doesn’t have a list in it" action={<ButtonLink to="/">Find a restaurant</ButtonLink>}>
         It may have been cut off when it was copied. Ask for the link again.
       </StateMessage>
     )
@@ -50,6 +50,7 @@ export function SharedListPage() {
         </Button>
       </div>
 
+      <h2 className="sr-only">Places in this list</h2>
       <ListItems ids={shared.restaurantIds} emptyText="This list is empty." />
       <p className="hidden text-small text-text-muted print:block">Sample data: the restaurants in this list are fictional. Printed from Tableside.</p>
     </div>

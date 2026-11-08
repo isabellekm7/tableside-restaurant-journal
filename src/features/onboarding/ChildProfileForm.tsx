@@ -25,6 +25,8 @@ export interface ChildProfileFormProps {
   secondaryActions?: ReactNode
   /** Keep Save reachable while scrolling a tall list (inside a sheet). */
   stickyActions?: boolean
+  /** Level of each "Child N" heading: 2 under the page's h1, 3 under a sheet's h2. */
+  childHeadingLevel?: 2 | 3
 }
 
 function BandPicker({ draft, label, onPick }: { draft: Draft; label: string; onPick: (band: (typeof AGE_BANDS)[number]) => void }) {
@@ -67,7 +69,8 @@ function BandPicker({ draft, label, onPick }: { draft: Draft; label: string; onP
  * "Who's eating?": 1-4 children, each by age group (fast path) with an optional
  * exact age. Shared by first-run onboarding and the header-chip editor.
  */
-export function ChildProfileForm({ initialChildren, onSubmit, submitLabel, secondaryActions, stickyActions = false }: ChildProfileFormProps) {
+export function ChildProfileForm({ initialChildren, onSubmit, submitLabel, secondaryActions, stickyActions = false, childHeadingLevel = 3 }: ChildProfileFormProps) {
+  const ChildHeading = childHeadingLevel === 2 ? 'h2' : 'h3'
   const [drafts, setDrafts] = useState<Draft[]>(() => draftsFromChildren(initialChildren))
   const formRef = useRef<HTMLFormElement>(null)
   const previousCount = useRef(drafts.length)
@@ -96,7 +99,7 @@ export function ChildProfileForm({ initialChildren, onSubmit, submitLabel, secon
           return (
             <li key={draft.key} className="rounded-lg border border-line bg-surface p-4 shadow-card">
               <div className="mb-3 flex items-center justify-between">
-                <h3 className="font-sans text-body font-semibold">{label}</h3>
+                <ChildHeading className="font-sans text-body font-semibold">{label}</ChildHeading>
                 {drafts.length > 1 && (
                   <IconButton
                     label={`Remove ${label.toLowerCase()}`}

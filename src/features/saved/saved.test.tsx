@@ -131,7 +131,7 @@ describe('Saved page', () => {
     Object.defineProperty(navigator, 'onLine', { value: false, configurable: true })
     await useTripStore.getState().createList('Trip', ['pdx-little-fern-kitchen'])
     renderAt('/saved')
-    expect(await screen.findByText(/You’re offline\. Your lists are on this device and still work/)).toBeInTheDocument()
+    expect(await screen.findByText(/You’re offline\. Your saved lists and the sample restaurants still work/)).toBeInTheDocument()
     expect(await screen.findByRole('article', { name: 'Little Fern Kitchen' })).toBeInTheDocument()
   })
 

@@ -50,7 +50,7 @@ export function RightNowPage() {
   if (data.status === 'error') {
     return (
       <div className="mx-auto w-full max-w-content px-4 py-8">
-        <StateMessage kind="error" title="We couldn’t check what’s open" action={<Button onClick={retry}>Try again</Button>}>
+        <StateMessage kind="error" level={1} title="We couldn’t check what’s open" action={<Button onClick={retry}>Try again</Button>}>
           Something went wrong on our side.
         </StateMessage>
       </div>

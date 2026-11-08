@@ -20,6 +20,8 @@ if (typeof HTMLDialogElement !== 'undefined' && typeof HTMLDialogElement.prototy
   }
 }
 
+document.documentElement.lang = 'en' // mirrors index.html
+
 beforeEach(() => {
   // jsdom doesn't implement scrolling; ScrollRestoration calls it on every navigation.
   window.scrollTo = vi.fn()

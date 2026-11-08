@@ -129,7 +129,7 @@ describe('/debug', () => {
     logger.track({ type: 'restaurant_selected', restaurantId: 'x', via: 'going_here' })
     const { user } = renderApp('/debug')
 
-    expect(screen.getByRole('heading', { name: '60-second metric' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: '60-second metric' })).toBeInTheDocument()
     // Tests run without Supabase configured, and /debug says so plainly.
     expect(screen.getByText('Not configured.')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Run connection check' })).not.toBeInTheDocument()

@@ -35,7 +35,7 @@ export function FitBadge({ level, label, score, size = 'md', className }: FitBad
     >
       {icons[level]}
       <span>{label ?? FIT_LEVEL_LABEL[level]}</span>
-      {score !== undefined && <span className="font-medium tabular-nums opacity-90">· {Math.round(score)}</span>}
+      {score !== undefined && <span className="font-medium tabular-nums">· {Math.round(score)}</span>}
     </span>
   )
 }

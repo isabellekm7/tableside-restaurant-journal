@@ -28,20 +28,25 @@ export function OnboardingPage() {
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <SampleDataStrip />
+      <header>
+        <SampleDataStrip />
+        <div className="mx-auto w-full max-w-content px-4 pt-6">
+          <Wordmark />
+        </div>
+      </header>
       <main id="main" className="mx-auto flex w-full max-w-content flex-1 flex-col gap-6 px-4 py-6">
-        <Wordmark />
-        <header>
+        <div>
           <h1 className="text-display">Who’s eating?</h1>
           <p className="mt-2 text-lead text-text-muted">
             We’ll show how well each restaurant works for your kids’ ages. It takes a few seconds, and you can change it
             any time.
           </p>
-        </header>
+        </div>
 
         <ChildProfileForm
           initialChildren={children}
           submitLabel="Find restaurants"
+          childHeadingLevel={2}
           onSubmit={(kids) => {
             saveChildren(kids, 'onboarding')
             navigate(to, { replace: true })

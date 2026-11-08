@@ -250,14 +250,14 @@ export function RestaurantDetailPage() {
   }
   if (data.status === 'error') {
     return (
-      <StateMessage kind="error" title="We couldn’t load this restaurant" action={<Button onClick={retry}>Try again</Button>}>
+      <StateMessage kind="error" level={1} title="We couldn’t load this restaurant" action={<Button onClick={retry}>Try again</Button>}>
         Something went wrong on our side.
       </StateMessage>
     )
   }
   if (data.status === 'notFound') {
     return (
-      <StateMessage kind="empty" title="We can’t find that restaurant" action={<ButtonLink to="/">Back to Explore</ButtonLink>}>
+      <StateMessage kind="empty" level={1} title="We can’t find that restaurant" action={<ButtonLink to="/">Back to Explore</ButtonLink>}>
         The link may be old. Sample restaurants can change between versions.
       </StateMessage>
     )

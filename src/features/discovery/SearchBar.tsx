@@ -105,7 +105,7 @@ function CityForm({ cities, city, onCityChange, locating, onUseLocation }: CityF
           disabled={locating}
           leadingIcon={<LocateFixed size={18} aria-hidden="true" />}
           onClick={onUseLocation}
-          aria-label={locating ? 'Finding your location' : 'Use my location'}
+          title="Use my location"
           className="shrink-0 px-4"
         >
           <span className="max-[380px]:sr-only">{locating ? 'Locating…' : 'Near me'}</span>

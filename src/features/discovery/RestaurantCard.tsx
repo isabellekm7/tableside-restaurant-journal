@@ -116,7 +116,7 @@ export function RestaurantCard({ item, selected = false, dietaryTags = [], compa
             className="relative z-10 -mr-2"
             leadingIcon={<MapPin size={18} aria-hidden="true" />}
             onClick={onShowOnMap}
-            aria-label={`Show ${restaurant.name} on the map`}
+            aria-label={`Show on map: ${restaurant.name}`}
           >
             Show on map
           </Button>
