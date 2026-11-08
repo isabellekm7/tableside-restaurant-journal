@@ -36,6 +36,18 @@ function isStoredEvent(v: unknown): v is StoredEvent {
   )
 }
 
+/**
+ * Events are meant to be anonymous. This is a last line of defence: any text value that
+ * looks like an email address (contains "@") is replaced before it is stored or logged,
+ * so a future mistake can't leak one into the exportable log.
+ */
+export function redact<T extends AppEvent>(event: T): T {
+  const clean = Object.fromEntries(
+    Object.entries(event).map(([key, value]) => [key, typeof value === 'string' && value.includes('@') ? '[redacted]' : value]),
+  )
+  return clean as T
+}
+
 function makeSessionId(now: number): string {
   return `${now.toString(36)}-${Math.random().toString(36).slice(2, 7)}`
 }
@@ -73,7 +85,7 @@ export function createEventLogger(options: EventLoggerOptions = {}): EventLogger
       const existing = read()
       const ts = now()
       const lastId = existing[existing.length - 1]?.id ?? 0
-      const stored: StoredEvent = { ...event, id: lastId + 1, ts, sessionId, msSinceOpen: ts - openedAt }
+      const stored: StoredEvent = { ...redact(event), id: lastId + 1, ts, sessionId, msSinceOpen: ts - openedAt }
       write([...existing, stored].slice(-MAX_STORED_EVENTS))
       log(stored)
       return stored

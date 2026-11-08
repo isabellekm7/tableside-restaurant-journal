@@ -60,6 +60,14 @@ describe('event logger', () => {
     expect(() => logger.track({ type: 'app_open' })).not.toThrow()
   })
 
+  it('redacts anything that looks like an email address, as a last line of defence', () => {
+    const { logger } = makeLogger()
+    const event = logger.track({ type: 'filter_used', filter: 'search', value: 'priya@example.com' })
+    expect(event).toMatchObject({ value: '[redacted]' })
+    expect(JSON.stringify(logger.getEvents())).not.toContain('priya@example.com')
+    expect(logger.track({ type: 'filter_used', filter: 'price', value: 2 })).toMatchObject({ value: 2 })
+  })
+
   it('records no personal data: child events carry only bands and ages', () => {
     const { logger } = makeLogger()
     const event = logger.track({ type: 'children_set', source: 'onboarding', bands: ['toddler'], ages: [2] })
