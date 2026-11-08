@@ -7,6 +7,7 @@ export function NotFoundPage() {
   return (
     <StateMessage
       kind="empty"
+      level={1}
       title="We can't find that page"
       action={<ButtonLink to="/">Back to Explore</ButtonLink>}
     >

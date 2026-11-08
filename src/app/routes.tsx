@@ -1,14 +1,13 @@
 import type { RouteObject } from 'react-router'
 import { AppShell } from '../components/layout/AppShell'
+import { RouteFallback } from '../components/layout/RouteFallback'
 import { AccountPage } from '../features/account/AccountPage'
-import { DebugPage } from '../features/debug/DebugPage'
 import { RestaurantDetailPage } from '../features/detail/RestaurantDetailPage'
 import { DiscoveryPage } from '../features/discovery/DiscoveryPage'
 import { OnboardingPage } from '../features/onboarding/OnboardingPage'
 import { RightNowPage } from '../features/rightNow/RightNowPage'
 import { SavedPage } from '../features/saved/SavedPage'
 import { SharedListPage } from '../features/saved/SharedListPage'
-import { StyleguidePage } from '../features/styleguide/StyleguidePage'
 import { NotFoundPage } from '../routes/NotFoundPage'
 
 /**
@@ -19,6 +18,7 @@ export const routes: RouteObject[] = [
   { path: 'welcome', element: <OnboardingPage /> },
   {
     element: <AppShell />,
+    HydrateFallback: RouteFallback,
     children: [
       { index: true, element: <DiscoveryPage /> },
       { path: 'restaurant/:id', element: <RestaurantDetailPage /> },
@@ -26,8 +26,8 @@ export const routes: RouteObject[] = [
       { path: 'account', element: <AccountPage /> },
       { path: 'saved', element: <SavedPage /> },
       { path: 'shared', element: <SharedListPage /> },
-      { path: 'styleguide', element: <StyleguidePage /> },
-      { path: 'debug', element: <DebugPage /> },
+      { path: 'styleguide', lazy: async () => ({ Component: (await import('../features/styleguide/StyleguidePage')).StyleguidePage }) },
+      { path: 'debug', lazy: async () => ({ Component: (await import('../features/debug/DebugPage')).DebugPage }) },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

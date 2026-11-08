@@ -46,8 +46,8 @@ export default defineConfig({
     env: { VITE_SUPABASE_URL: '', VITE_SUPABASE_PUBLISHABLE_KEY: '' },
     globals: false,
     setupFiles: ['./src/test/setup.ts'],
-    // Vitest blanks CSS by default, including `?raw` imports. tokens.css is read
-    // as text by the styleguide and contrast tests, so let it through.
-    css: { include: [/tokens\.css/] },
+    // Vitest blanks CSS by default, including `?raw` imports. These files are read as text
+    // by the styleguide and by the contrast / reduced-motion / focus tests, so let them through.
+    css: { include: [/(tokens|base)\.css/] },
   },
 })

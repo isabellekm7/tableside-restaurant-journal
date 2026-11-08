@@ -139,7 +139,7 @@ export function DebugPage() {
         {sessions.length === 0 ? (
           <p className="text-text-muted">No sessions yet. Use the app, then press Refresh.</p>
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-line bg-surface">
+          <div role="region" aria-label="Per-session results table" tabIndex={0} className="overflow-x-auto rounded-lg border border-line bg-surface">
             <table className="w-full min-w-[40rem] text-left text-small">
               <caption className="sr-only">Per-session results</caption>
               <thead className="bg-surface-sunken text-text-muted">

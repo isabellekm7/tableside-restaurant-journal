@@ -187,7 +187,7 @@ export function MapView({ center, zoom, markers, selectedId, onSelect, userLocat
 
   return (
     <div className="relative h-full w-full">
-      <div ref={containerRef} role="region" aria-label={label} className="h-full w-full bg-surface-sunken" />
+      <div ref={containerRef} role="region" aria-label={label} className="ts-map h-full w-full bg-surface-sunken" />
       {tilesFailed && (
         <p
           role="status"

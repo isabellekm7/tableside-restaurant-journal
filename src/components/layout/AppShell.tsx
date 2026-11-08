@@ -5,6 +5,7 @@ import { ProfileSheet } from '../../features/profile/ProfileSheet'
 import { useAuthStore } from '../../store/authStore'
 import { useTripStore } from '../../store/tripStore'
 import { useProfileStore } from '../../store/profileStore'
+import { OfflineBanner } from './OfflineBanner'
 import { PrimaryNav } from './PrimaryNav'
 import { SampleDataStrip } from './SampleDataStrip'
 import { Wordmark } from './Wordmark'
@@ -39,7 +40,7 @@ export function AppShell() {
     <div className="flex min-h-dvh flex-col">
       <a
         href="#main"
-        className="print:hidden sr-only rounded-pill bg-primary px-4 py-2 font-semibold text-on-primary focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50"
+        className="print:hidden sr-only rounded-pill bg-primary font-semibold text-on-primary focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2"
       >
         Skip to content
       </a>
@@ -47,7 +48,7 @@ export function AppShell() {
       <header className="print:hidden sticky top-0 z-20 border-b border-line bg-bg/95 pt-[env(safe-area-inset-top)] backdrop-blur">
         <SampleDataStrip />
         <div className="mx-auto flex min-h-14 w-full max-w-wide items-center gap-3 px-4">
-          <Link to="/" aria-label="Tableside home" className="shrink-0 rounded-md">
+          <Link to="/" aria-label="Tableside home" className="inline-flex min-h-(--size-touch) min-w-(--size-touch) shrink-0 items-center rounded-md">
             <Wordmark collapseOnPhone />
           </Link>
           <div className="ml-auto flex min-w-0 items-center gap-2">
@@ -56,6 +57,8 @@ export function AppShell() {
           </div>
         </div>
       </header>
+
+      <OfflineBanner />
 
       <main
         id="main"

@@ -1,6 +1,6 @@
-import { render, screen, within } from '@testing-library/react'
+import { act, cleanup, render, screen, within } from '@testing-library/react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { useProfileStore } from '../store/profileStore'
 import { routes } from './routes'
 
@@ -25,6 +25,39 @@ describe('first-run gate', () => {
   it('does not gate anyone who has finished or skipped onboarding', () => {
     useProfileStore.getState().skipOnboarding()
     expect(renderAt('/saved').state.location.pathname).toBe('/saved')
+  })
+})
+
+describe('offline banner', () => {
+  beforeEach(() => {
+    useProfileStore.getState().skipOnboarding()
+  })
+  afterEach(() => {
+    Object.defineProperty(navigator, 'onLine', { value: true, configurable: true })
+  })
+
+  it('appears on every screen when offline, and says what still works', () => {
+    Object.defineProperty(navigator, 'onLine', { value: false, configurable: true })
+    for (const path of ['/', '/saved', '/right-now', '/account']) {
+      renderAt(path)
+      expect(screen.getByText(/You’re offline\. Your saved lists and the sample restaurants still work/)).toBeInTheDocument()
+      cleanup()
+    }
+  })
+
+  it('shows and hides as the connection changes, without a reload', () => {
+    renderAt('/saved')
+    expect(screen.queryByText(/You’re offline/)).not.toBeInTheDocument()
+    act(() => {
+      Object.defineProperty(navigator, 'onLine', { value: false, configurable: true })
+      window.dispatchEvent(new Event('offline'))
+    })
+    expect(screen.getByText(/You’re offline/)).toBeInTheDocument()
+    act(() => {
+      Object.defineProperty(navigator, 'onLine', { value: true, configurable: true })
+      window.dispatchEvent(new Event('online'))
+    })
+    expect(screen.queryByText(/You’re offline/)).not.toBeInTheDocument()
   })
 })
 
@@ -57,16 +90,16 @@ describe('app shell and routing', () => {
     expect(screen.getByRole('link', { name: 'Back to Explore' })).toHaveAttribute('href', '/')
   })
 
-  it('serves the styleguide, with every contrast pair passing', () => {
+  it('serves the styleguide, with every contrast pair passing', async () => {
     renderAt('/styleguide')
-    expect(screen.getByRole('heading', { level: 1, name: 'Styleguide' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Styleguide' })).toBeInTheDocument()
     const table = screen.getByRole('table', { name: /contrast ratios/i })
     expect(within(table).queryAllByText('Fail')).toHaveLength(0)
     expect(within(table).getAllByText('Pass').length).toBeGreaterThan(10)
   })
 
-  it('serves the hidden debug route', () => {
+  it('serves the hidden debug route', async () => {
     renderAt('/debug')
-    expect(screen.getByRole('heading', { level: 1, name: 'Debug' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Debug' })).toBeInTheDocument()
   })
 })

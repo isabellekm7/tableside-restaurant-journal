@@ -95,7 +95,7 @@ function ContrastSection() {
       title="Contrast (WCAG AA)"
       description="Every pair the UI relies on, checked against AA. The same list is enforced by a unit test, so an edit that breaks AA fails the build."
     >
-      <div className="overflow-x-auto rounded-lg border border-line bg-surface">
+      <div role="region" aria-label="Contrast ratios table" tabIndex={0} className="overflow-x-auto rounded-lg border border-line bg-surface">
         <table className="w-full min-w-[34rem] text-left text-small">
           <caption className="sr-only">Colour contrast ratios for token pairs</caption>
           <thead className="bg-surface-sunken text-text-muted">

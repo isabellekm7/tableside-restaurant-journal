@@ -1,11 +1,15 @@
 import { X } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { IconButton } from '../../components/ui/Button'
-import { MapView, type MapMarker } from '../../components/map/MapView'
+import type { MapMarker } from '../../components/map/MapView'
+import { Skeleton } from '../../components/ui/Skeleton'
 import type { City, LatLng } from '../../data'
 import type { RankedRestaurant } from '../../lib/discovery/rank'
 import { FIT_LEVEL_LABEL } from '../../lib/fit'
 import { RestaurantCard } from './RestaurantCard'
+
+// Leaflet is the heaviest dependency and only the map view needs it: load it on demand.
+const MapView = lazy(() => import('../../components/map/MapView').then((m) => ({ default: m.MapView })))
 
 export interface MapPaneProps {
   items: readonly RankedRestaurant[]
@@ -49,6 +53,7 @@ export function MapPane({ items, city, selectedId, onSelect, userLocation }: Map
 
   return (
     <div className="relative h-full overflow-hidden rounded-lg border border-line">
+      <Suspense fallback={<Skeleton className="h-full w-full rounded-none" />}>
       <MapView
         center={city.center}
         zoom={city.zoom}
@@ -59,6 +64,7 @@ export function MapPane({ items, city, selectedId, onSelect, userLocation }: Map
         label={`Map of restaurants in ${city.name}`}
         bottomInset={inset}
       />
+      </Suspense>
       {selected && (
         <div ref={previewRef} className="absolute inset-x-3 bottom-3 z-[1100] lg:hidden">
           <RestaurantCard item={selected} selected compact />
