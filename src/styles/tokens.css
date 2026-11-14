@@ -28,28 +28,27 @@
 
   /* ───────────── 1. Palette ───────────── */
 
-  /* Cream: warm neutrals for surfaces and borders */
-  --color-cream-50: #fbf8f2;
-  --color-cream-100: #f4eee3;
-  --color-cream-200: #e9e0cf;
-  --color-cream-300: #d8ccb5;
+  /* Mist: cool, teal-tinted neutrals for surfaces and borders */
+  --color-mist-50: #f5faf9;
+  --color-mist-100: #eaf3f1;
+  --color-mist-200: #d5e5e1;
+  --color-mist-300: #bfd3ce;
 
-  /* Stone: warm greys for text and strong lines */
-  --color-stone-500: #7a6d5c;
-  --color-stone-600: #5f5446;
-  --color-stone-700: #463e33;
-  --color-ink: #241f1a;
+  /* Slate: cool greys for text and strong lines */
+  --color-slate-500: #6f8580;
+  --color-slate-600: #526b65;
+  --color-slate-700: #405551;
+  --color-ink: #182b29;
 
-  /* Pine: brand green */
-  --color-pine-50: #ecf3ef;
-  --color-pine-100: #d6e7de;
-  --color-pine-200: #b1d0c1;
-  --color-pine-500: #3f7c64;
-  --color-pine-600: #2f6350;
-  --color-pine-700: #244e3f;
-  --color-pine-800: #1a3a2e;
+  /* Teal: brand colour */
+  --color-teal-50: #e8f5f2;
+  --color-teal-100: #ccede7;
+  --color-teal-200: #9dcfc9;
+  --color-teal-700: #0f766e;
+  --color-teal-800: #115e59;
+  --color-teal-900: #134e4a;
 
-  /* Clay: warm accent, also used for "not a fit" and errors */
+  /* Clay: "not a fit" and errors */
   --color-clay-50: #fbefe9;
   --color-clay-100: #f6dccf;
   --color-clay-500: #c95f3e;
@@ -65,43 +64,44 @@
   --color-olive-600: #5a6c14;
 
   --color-white: #ffffff;
-  --color-paper: #fffefb;
+  --color-paper: #ffffff;
 
   /* ───────────── 2. Semantic roles ───────────── */
 
-  --color-bg: var(--color-cream-50);
+  --color-bg: var(--color-mist-50);
   --color-surface: var(--color-paper);
-  --color-surface-sunken: var(--color-cream-100);
-  --color-line: var(--color-cream-200);
-  --color-line-strong: var(--color-stone-500);
+  --color-surface-sunken: var(--color-mist-100);
+  --color-line: var(--color-mist-200);
+  --color-line-strong: var(--color-slate-500);
 
   --color-text: var(--color-ink);
-  --color-text-muted: var(--color-stone-700);
-  --color-text-subtle: var(--color-stone-600);
+  --color-text-muted: var(--color-slate-700);
+  --color-text-subtle: var(--color-slate-600);
 
-  --color-primary: var(--color-pine-600);
-  --color-primary-hover: var(--color-pine-700);
-  --color-primary-soft: var(--color-pine-50);
+  --color-primary: var(--color-teal-700);
+  --color-primary-hover: var(--color-teal-800);
+  --color-primary-soft: var(--color-teal-50);
   --color-on-primary: var(--color-white);
 
-  --color-accent: var(--color-clay-600);
-  --color-accent-soft: var(--color-clay-50);
+  --color-accent: var(--color-teal-700);
+  --color-accent-hover: var(--color-teal-800);
+  --color-accent-soft: var(--color-teal-50);
   --color-on-accent: var(--color-white);
 
   --color-danger: var(--color-clay-700);
   --color-danger-bg: var(--color-clay-50);
 
   --color-focus: #2457c5;
-  --color-overlay: rgb(36 31 26 / 0.5);
+  --color-overlay: rgb(24 43 41 / 0.5);
 
   /* ───────────── 3. Kid-fit scale ─────────────
      bg + fg  → badges and chips (text on tinted background)
      solid    → map pins and meters (white text on top)
      Colour is never the only signal: components always add an icon and a word. */
 
-  --color-fit-great-bg: var(--color-pine-100);
-  --color-fit-great-fg: var(--color-pine-800);
-  --color-fit-great-solid: var(--color-pine-600);
+  --color-fit-great-bg: var(--color-teal-100);
+  --color-fit-great-fg: var(--color-teal-900);
+  --color-fit-great-solid: var(--color-teal-700);
 
   --color-fit-good-bg: var(--color-olive-100);
   --color-fit-good-fg: var(--color-olive-700);
@@ -115,9 +115,9 @@
   --color-fit-poor-fg: var(--color-clay-700);
   --color-fit-poor-solid: var(--color-clay-600);
 
-  --color-fit-unknown-bg: var(--color-cream-100);
-  --color-fit-unknown-fg: var(--color-stone-700);
-  --color-fit-unknown-solid: var(--color-stone-600);
+  --color-fit-unknown-bg: var(--color-mist-100);
+  --color-fit-unknown-fg: var(--color-slate-700);
+  --color-fit-unknown-solid: var(--color-slate-600);
 
   --color-on-solid: var(--color-white);
 
@@ -152,9 +152,9 @@
 
   /* ───────────── Shadow (warm-tinted, low contrast) ───────────── */
 
-  --shadow-card: 0 1px 2px rgb(36 31 26 / 0.06), 0 2px 8px rgb(36 31 26 / 0.05);
-  --shadow-raised: 0 4px 12px rgb(36 31 26 / 0.08), 0 12px 32px rgb(36 31 26 / 0.08);
-  --shadow-sheet: 0 -8px 32px rgb(36 31 26 / 0.14);
+  --shadow-card: 0 1px 2px rgb(24 43 41 / 0.06), 0 2px 8px rgb(24 43 41 / 0.05);
+  --shadow-raised: 0 4px 12px rgb(24 43 41 / 0.08), 0 12px 32px rgb(24 43 41 / 0.08);
+  --shadow-sheet: 0 -8px 32px rgb(24 43 41 / 0.14);
 
   /* ───────────── Motion ─────────────
      Reduced-motion users get ~0ms durations (see base.css). */

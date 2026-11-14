@@ -18,8 +18,8 @@ const pwa = process.env.VITEST
           start_url: '/',
           scope: '/',
           display: 'standalone',
-          background_color: '#fbf8f2',
-          theme_color: '#2f6350',
+          background_color: '#f5faf9',
+          theme_color: '#0f766e',
           icons: [{ src: 'favicon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' }],
         },
         workbox: {

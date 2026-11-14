@@ -14,7 +14,7 @@ const variants: Record<ButtonVariant, string> = {
   primary: 'bg-primary text-on-primary hover:bg-primary-hover',
   secondary: 'border-2 border-primary bg-transparent text-primary hover:bg-primary-soft',
   ghost: 'text-primary hover:bg-primary-soft',
-  accent: 'bg-accent text-on-accent hover:bg-clay-700',
+  accent: 'bg-accent text-on-accent hover:bg-accent-hover',
 }
 
 const sizes: Record<ButtonSize, string> = {

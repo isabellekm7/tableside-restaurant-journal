@@ -46,7 +46,7 @@ function ColorSection() {
   const palette = rest.filter((t) => !isAlias(t))
   const semantic = rest.filter((t) => isAlias(t))
 
-  // Group palette by hue name (color-pine-600 → "pine"); single colours go under "Other".
+  // Group palette by hue name (color-teal-700 → "teal"); single colours go under "Other".
   const hueOf = (t: Token) => {
     const parts = t.name.split('-')
     return /^\d+$/.test(parts[parts.length - 1] ?? '') ? parts[1] : undefined

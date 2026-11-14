@@ -10,8 +10,8 @@ export function LogoMark({ size = 28, className }: { size?: number; className?: 
       className={cx('shrink-0', className)}
     >
       <rect width="32" height="32" rx="8" fill="currentColor" />
-      <circle cx="16" cy="16" r="8.5" fill="none" stroke="var(--color-cream-50)" strokeWidth="2" />
-      <circle cx="16" cy="16" r="3.5" fill="var(--color-cream-50)" />
+      <circle cx="16" cy="16" r="8.5" fill="none" stroke="var(--color-mist-50)" strokeWidth="2" />
+      <circle cx="16" cy="16" r="3.5" fill="var(--color-mist-50)" />
     </svg>
   )
 }

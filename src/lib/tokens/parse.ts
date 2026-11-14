@@ -4,9 +4,9 @@
  */
 
 export interface Token {
-  /** Without the leading dashes, e.g. "color-pine-600". */
+  /** Without the leading dashes, e.g. "color-teal-700". */
   name: string
-  /** Declared value, e.g. "#2f6350" or "var(--color-pine-600)". */
+  /** Declared value, e.g. "#0f766e" or "var(--color-teal-700)". */
   value: string
 }
 

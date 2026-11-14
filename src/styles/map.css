@@ -8,9 +8,9 @@
 
  Overrides are also scoped under .ts-map (our map container) so they win on SPECIFICITY, not on
  stylesheet order: the map is loaded lazily, so Leaflet's CSS can arrive after this file. */
-/* Calmer, warmer tiles that sit well with the palette. */
+/* Calmer, slightly muted tiles that sit well with the palette. */
 .leaflet-tile-pane {
-  filter: saturate(0.7) sepia(0.12);
+  filter: saturate(0.7);
 }
 
 .leaflet-container.ts-map {

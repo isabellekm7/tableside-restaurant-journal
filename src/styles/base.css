@@ -41,7 +41,7 @@
   }
 
   ::selection {
-    background: var(--color-pine-200);
+    background: var(--color-teal-200);
     color: var(--color-ink);
   }
 
